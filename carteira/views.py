@@ -3,9 +3,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
 from .models import Moeda, Transacao
 import requests
-import json  # Importante para enviar os dados para o gráfico Javascript
+import json
 
-@login_required
+@login_required(login_url='/admin/')
+
 def dashboard(request):
     moedas = Moeda.objects.all()
     patrimonio_investido = 0
