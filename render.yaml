@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: sistema-cripto
+    runtime: python
+    buildCommand: "pip install -r requirements.txt && python manage.py migrate"
+    startCommand: "gunicorn sistema_cripto.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
