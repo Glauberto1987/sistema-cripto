@@ -1,1 +1,1 @@
-web: gunicorn sistema_cripto.wsgi --log-file -
+web: gunicorn core.wsgi:application --log-file -
