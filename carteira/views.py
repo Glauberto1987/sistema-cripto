@@ -4,6 +4,7 @@ from .models import Moeda, Transacao
 import requests
 import json  # Importante para enviar os dados para o gráfico Javascript
 
+@login_required
 def dashboard(request):
     moedas = Moeda.objects.all()
     patrimonio_investido = 0
