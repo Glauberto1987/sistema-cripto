@@ -159,57 +159,64 @@
 </div>
 
 <script>
-    // 1. CARREGAMENTO INTELIGENTE DE ÍCONES (Resolve o problema das imagens quebradas)
+    // 1. CARREGAMENTO INTELIGENTE DE ÍCONES
     document.querySelectorAll('.icone-moeda').forEach(img => {
         let simbolo = img.getAttribute('data-simbolo').trim().toUpperCase();
         
-        // Dicionário "De-Para": Transforma a sua sigla na sigla que a API das imagens usa
         const mapaIcones = {
-            'BTTC': 'btt',   // BitTorrent antigo
-            'POL': 'matic',  // Polygon (novo ticker POL puxa a imagem da MATIC)
+            'BTTC': 'btt',
+            'POL': 'matic',
         };
         
         let simboloApi = mapaIcones[simbolo] ? mapaIcones[simbolo] : simbolo.toLowerCase();
         
-        // Puxa a imagem atualizada da CoinCap
         img.src = `https://assets.coincap.io/assets/icons/${simboloApi}@2x.png`;
         
-        // Se ainda assim der erro, carrega um SVG limpo genérico de uma moeda para não quebrar o layout
         img.onerror = function() {
             this.onerror = null;
             this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><circle cx="12" cy="12" r="10"/><path fill="%2315181e" d="M12 6c-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6zm0 10.5c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5 4.5 2 4.5 4.5-2 4.5-4.5 4.5z"/><path fill="%2315181e" d="M11 9h2v6h-2z"/></svg>';
         };
     });
 
-    // 2. CORES DINÂMICAS NOS LINKS DA TABELA (Incluindo SHIB e POL)
+    // 2. PALETA DEFINITIVA DAS MOEDAS (Usada na tabela e no gráfico)
     const paletaCores = {
-        'XRP': '#00b8ff',
-        'FLR': '#ff007f',
-        'XLM': '#ffaa00',
-        'LUNC': '#10b981',
-        'BTTC': '#f43f5e',
-        'ADA': '#8b5cf6',
+        'XRP': '#00b8ff',  // Azul Neon
+        'FLR': '#ff007f',  // Rosa Neon Flare
+        'XLM': '#ffaa00',  // Laranja Stellar
+        'LUNC': '#10b981', // Verde Esmeralda Terra Classic
+        'BTTC': '#f43f5e', // Vermelho/Rosado
+        'ADA': '#0033ad',  // Azul Escuro Cardano
         'SHIB': '#e42d04', // Vermelho Shiba
         'POL': '#8247e5',  // Roxo Polygon
-        'BTC': '#f7931a',
-        'ETH': '#627eea'
+        'BTC': '#f7931a',  // Laranja Bitcoin
+        'ETH': '#627eea'   // Azul Ethereum
     };
 
+    // Aplica a cor nos links da Tabela
     document.querySelectorAll('.link-moeda').forEach(link => {
         const simbolo = link.getAttribute('data-simbolo').trim().toUpperCase();
         link.style.color = paletaCores[simbolo] || '#38bdf8'; 
     });
 
-    // 3. GRÁFICO DE PIZZA
+    // 3. GRÁFICO DE PIZZA (Agora com cores 100% amarradas à moeda)
+    const labelsDoGrafico = {{ nomes_grafico|safe }};
+    const dadosDoGrafico = {{ valores_grafico|safe }};
+    
+    // Mágica: Cria a lista de cores do gráfico buscando a cor exata de cada moeda que veio do Python
+    const coresDoGrafico = labelsDoGrafico.map(sigla => {
+        return paletaCores[sigla.trim().toUpperCase()] || '#475569'; // Cinza escuro se não achar a cor
+    });
+
     const ctxPizza = document.getElementById('graficoPizza').getContext('2d');
     new Chart(ctxPizza, {
         type: 'doughnut',
         data: {
-            labels: {{ nomes_grafico|safe }},
+            labels: labelsDoGrafico,
             datasets: [{
-                data: {{ valores_grafico|safe }},
-                backgroundColor: ['#00b8ff', '#ff007f', '#ffaa00', '#94a3b8', '#475569', '#38bdf8', '#f43f5e', '#8247e5', '#e42d04'],
-                borderWidth: 0, hoverOffset: 8
+                data: dadosDoGrafico,
+                backgroundColor: coresDoGrafico, // Usa as cores dinâmicas geradas acima
+                borderWidth: 0, 
+                hoverOffset: 8
             }]
         },
         options: {
@@ -250,6 +257,5 @@
         }
     });
 </script>
-
 </body>
 </html>
