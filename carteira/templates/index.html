@@ -30,7 +30,7 @@
         .card { background-color: #15181e; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); border: 1px solid #2d3748; position: relative; overflow: hidden; }
         .card h3 { margin: 0 0 10px 0; font-size: 13px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
         .card .valor { font-size: 26px; font-weight: bold; margin: 0; z-index: 2; position: relative; }
-        .card i.bg-icon { position: absolute; right: 15px; top: 25px; font-size: 3.5rem; color: #ffffff; opacity: 0.04; z-index: 1; transform: rotate(-10deg); } /* Ícone de marca d'água */
+        .card i.bg-icon { position: absolute; right: 15px; top: 25px; font-size: 3.5rem; color: #ffffff; opacity: 0.04; z-index: 1; transform: rotate(-10deg); }
 
         /* Containers de Gráficos e Tabelas */
         .grafico-container, .tabela-container { background-color: #15181e; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); border: 1px solid #2d3748; }
@@ -50,7 +50,7 @@
         
         /* Nome e ícone da moeda na tabela */
         .moeda-info { display: flex; align-items: center; gap: 10px; }
-        .moeda-info img { width: 24px; height: 24px; border-radius: 50%; box-shadow: 0 0 5px rgba(255,255,255,0.1); }
+        .icone-moeda { width: 24px; height: 24px; border-radius: 50%; box-shadow: 0 0 5px rgba(255,255,255,0.1); }
         .link-moeda { font-weight: bold; text-decoration: none; transition: all 0.3s; }
         .link-moeda:hover { text-shadow: 0 0 8px currentColor; filter: brightness(1.2); }
     </style>
@@ -64,13 +64,12 @@
     <div class="cabecalho">
         <h1>📊 Visão Geral do Portfólio</h1>
         <div class="cabecalho-botoes">
-            <!-- Botão Novo: Vai direto pra tela do admin de adicionar transação -->
             <a href="/admin/carteira/transacao/add/" class="btn-nova-trans"><i class="fa-solid fa-plus"></i> Nova Transação</a>
             <a href="{% url 'atualizar_precos' %}" class="btn-atualizar"><i class="fa-solid fa-rotate"></i> Atualizar Preços</a>
         </div>
     </div>
 
-    <!-- Cards de Resumo com Ícones em Marca d'água -->
+    <!-- Cards de Resumo -->
     <div class="dashboard-grid">
         <div class="card">
             <i class="fa-solid fa-vault bg-icon"></i>
@@ -98,9 +97,8 @@
         </div>
     </div>
 
-    <!-- Sessão dos Gráficos (Pizza e Evolução) -->
+    <!-- Sessão dos Gráficos -->
     <div class="charts-grid">
-        <!-- Gráfico de Pizza (Rosca) -->
         <div class="grafico-container">
             <h2><i class="fa-solid fa-chart-pie"></i> Divisão da Carteira</h2>
             <div style="position: relative; height: 300px; width: 100%; display: flex; justify-content: center; align-items: center;">
@@ -108,7 +106,6 @@
             </div>
         </div>
 
-        <!-- NOVO: Gráfico de Linha (Evolução) -->
         <div class="grafico-container">
             <h2><i class="fa-solid fa-arrow-trend-up"></i> Evolução Patrimonial (Exemplo)</h2>
             <div style="position: relative; height: 300px; width: 100%;">
@@ -117,7 +114,7 @@
         </div>
     </div>
 
-    <!-- Tabela Detalhada com Ícones das Moedas -->
+    <!-- Tabela Detalhada -->
     <div class="tabela-container">
         <h2><i class="fa-solid fa-coins"></i> Seus Ativos</h2>
         <table>
@@ -136,10 +133,10 @@
                 <tr>
                     <td>
                         <div class="moeda-info">
-                            <!-- Puxa o ícone oficial da moeda direto da internet usando o símbolo -->
-                            <img src="https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/{{ item.simbolo|lower }}.svg" onerror="this.src='https://cdn-icons-png.flaticon.com/512/825/825503.png'">
+                            <!-- Aqui deixamos a tag img preparada. O Javascript vai preencher com a logo certa! -->
+                            <img class="icone-moeda" data-simbolo="{{ item.simbolo }}" src="" alt="{{ item.simbolo }}">
                             
-                            <a href="{% url 'detalhe_moeda' item.id %}" class="link-moeda" data-simbolo="{{ item.simbolo|upper }}">
+                            <a href="{% url 'detalhe_moeda' item.id %}" class="link-moeda" data-simbolo="{{ item.simbolo }}">
                                 {{ item.nome }} ({{ item.simbolo }}) 
                             </a>
                         </div>
@@ -161,9 +158,30 @@
     </div>
 </div>
 
-<!-- Lógica JavaScript (Gráficos e Cores) -->
 <script>
-    // 1. Aplicando as cores dinâmicas nos nomes das moedas na tabela
+    // 1. CARREGAMENTO INTELIGENTE DE ÍCONES (Resolve o problema das imagens quebradas)
+    document.querySelectorAll('.icone-moeda').forEach(img => {
+        let simbolo = img.getAttribute('data-simbolo').trim().toUpperCase();
+        
+        // Dicionário "De-Para": Transforma a sua sigla na sigla que a API das imagens usa
+        const mapaIcones = {
+            'BTTC': 'btt',   // BitTorrent antigo
+            'POL': 'matic',  // Polygon (novo ticker POL puxa a imagem da MATIC)
+        };
+        
+        let simboloApi = mapaIcones[simbolo] ? mapaIcones[simbolo] : simbolo.toLowerCase();
+        
+        // Puxa a imagem atualizada da CoinCap
+        img.src = `https://assets.coincap.io/assets/icons/${simboloApi}@2x.png`;
+        
+        // Se ainda assim der erro, carrega um SVG limpo genérico de uma moeda para não quebrar o layout
+        img.onerror = function() {
+            this.onerror = null;
+            this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><circle cx="12" cy="12" r="10"/><path fill="%2315181e" d="M12 6c-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6zm0 10.5c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5 4.5 2 4.5 4.5-2 4.5-4.5 4.5z"/><path fill="%2315181e" d="M11 9h2v6h-2z"/></svg>';
+        };
+    });
+
+    // 2. CORES DINÂMICAS NOS LINKS DA TABELA (Incluindo SHIB e POL)
     const paletaCores = {
         'XRP': '#00b8ff',
         'FLR': '#ff007f',
@@ -171,16 +189,18 @@
         'LUNC': '#10b981',
         'BTTC': '#f43f5e',
         'ADA': '#8b5cf6',
+        'SHIB': '#e42d04', // Vermelho Shiba
+        'POL': '#8247e5',  // Roxo Polygon
         'BTC': '#f7931a',
         'ETH': '#627eea'
     };
 
     document.querySelectorAll('.link-moeda').forEach(link => {
-        const simbolo = link.getAttribute('data-simbolo');
-        link.style.color = paletaCores[simbolo] || '#38bdf8'; // Se não tiver na lista, usa azul claro
+        const simbolo = link.getAttribute('data-simbolo').trim().toUpperCase();
+        link.style.color = paletaCores[simbolo] || '#38bdf8'; 
     });
 
-    // 2. Gráfico de Pizza (O que você já tinha, atualizado)
+    // 3. GRÁFICO DE PIZZA
     const ctxPizza = document.getElementById('graficoPizza').getContext('2d');
     new Chart(ctxPizza, {
         type: 'doughnut',
@@ -188,7 +208,7 @@
             labels: {{ nomes_grafico|safe }},
             datasets: [{
                 data: {{ valores_grafico|safe }},
-                backgroundColor: ['#00b8ff', '#ff007f', '#ffaa00', '#94a3b8', '#475569', '#38bdf8', '#f43f5e'],
+                backgroundColor: ['#00b8ff', '#ff007f', '#ffaa00', '#94a3b8', '#475569', '#38bdf8', '#f43f5e', '#8247e5', '#e42d04'],
                 borderWidth: 0, hoverOffset: 8
             }]
         },
@@ -200,7 +220,7 @@
         }
     });
 
-    // 3. NOVO: Gráfico de Linha Neon (Dados simulados por enquanto)
+    // 4. GRÁFICO DE LINHA
     const ctxLinha = document.getElementById('graficoLinha').getContext('2d');
     new Chart(ctxLinha, {
         type: 'line',
@@ -208,13 +228,13 @@
             labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Hoje'],
             datasets: [{
                 label: 'Valor da Carteira (R$)',
-                data: [4500, 4200, 4800, 5100, 5050, {{ valor_atual_carteira|safe|default:"5620" }}], // O último ponto é o seu valor atual real!
-                borderColor: '#00b8ff', // Azul neon
-                backgroundColor: 'rgba(0, 184, 255, 0.1)', // Fundo translúcido
+                data: [4500, 4200, 4800, 5100, 5050, {{ valor_atual_carteira|safe|default:"5620" }}], 
+                borderColor: '#00b8ff', 
+                backgroundColor: 'rgba(0, 184, 255, 0.1)', 
                 borderWidth: 3,
                 fill: true,
-                tension: 0.4, // Curva suave
-                pointBackgroundColor: '#ff007f', // Bolinhas rosa
+                tension: 0.4, 
+                pointBackgroundColor: '#ff007f', 
                 pointBorderColor: '#fff',
                 pointRadius: 4,
                 pointHoverRadius: 6
