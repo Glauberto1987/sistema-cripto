@@ -1,0 +1,10 @@
+<nav style="background-color: #1f2937; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; color: white; font-family: sans-serif; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <div style="font-size: 18px; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+        <span>🚀</span> Sistema de Cripto
+    </div>
+    <div>
+        <a href="{% url 'dashboard' %}" style="color: #ffffff; text-decoration: none; margin-right: 20px; font-weight: 500;">Dashboard</a>
+        <a href="{% url 'admin:index' %}" style="color: #38bdf8; text-decoration: none; margin-right: 20px; font-weight: 500;">Painel Admin</a>
+        <a href="{% url 'admin:logout' %}" style="color: #f87171; text-decoration: none; font-weight: 500;">Sair</a>
+    </div>
+</nav>
