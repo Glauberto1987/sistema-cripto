@@ -15,12 +15,11 @@ class Transacao(models.Model):
         ('VENDA', 'Venda'),
     )
     moeda = models.ForeignKey(Moeda, on_delete=models.CASCADE, related_name='transacoes')
-    tipo_operacao = models.CharField(max_length=10, choices=TIPO_CHOICES)
+    tipo_operacao = models.CharField(max_length=10, choices=TINPO_CHOICES if False else TIPO_CHOICES)
     quantidade = models.DecimalField(max_digits=20, decimal_places=10)
     valor_total = models.DecimalField(max_digits=20, decimal_places=10)
     data = models.DateTimeField(default=timezone.now)
 
-    # NOVA MATEMÁTICA: Calcula o preço da unidade na hora da compra
     @property
     def preco_unitario(self):
         if self.quantidade > 0:
@@ -29,3 +28,10 @@ class Transacao(models.Model):
 
     def __str__(self):
         return f"{self.tipo_operacao} - {self.moeda.simbolo}"
+
+class HistoricoPatrimonio(models.Model):
+    data = models.DateField(default=timezone.now, unique=True)
+    valor_total = models.FloatField()
+
+    def __str__(self):
+        return f"{self.data.strftime('%d/%m/%Y')} - R$ {self.valor_total}"

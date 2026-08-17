@@ -1,15 +1,17 @@
 {% load static %}
 <nav style="background-color: #1f2937; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; color: white; font-family: sans-serif; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
     <div style="font-size: 18px; font-weight: bold; display: flex; align-items: center; gap: 12px;">
-        
-        <!-- SUA NOVA LOGO -->
         <img src="{% static 'logo.png' %}" alt="Logo" style="height: 40px; width: 40px; border-radius: 8px; object-fit: cover; box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);">
-        
         Sistema de Cripto
     </div>
-    <div>
-        <a href="{% url 'dashboard' %}" style="color: #ffffff; text-decoration: none; margin-right: 20px; font-weight: 500;">Dashboard</a>
-        <a href="{% url 'admin:index' %}" style="color: #38bdf8; text-decoration: none; margin-right: 20px; font-weight: 500;">Painel Admin</a>
-        <a href="{% url 'admin:logout' %}" style="color: #f87171; text-decoration: none; font-weight: 500;">Sair</a>
+    <div style="display: flex; align-items: center; gap: 20px;">
+        <a href="{% url 'dashboard' %}" style="color: #ffffff; text-decoration: none; font-weight: 500;">Dashboard</a>
+        <a href="{% url 'admin:index' %}" style="color: #38bdf8; text-decoration: none; font-weight: 500;">Painel Admin</a>
+        
+        <!-- Formulário POST seguro para o Logout -->
+        <form action="{% url 'admin:logout' %}" method="post" style="display: inline; margin: 0;">
+            {% csrf_token %}
+            <button type="submit" style="background: none; border: none; color: #f87171; cursor: pointer; font-weight: 500; font-size: 15px; font-family: inherit; padding: 0;">Sair</button>
+        </form>
     </div>
 </nav>

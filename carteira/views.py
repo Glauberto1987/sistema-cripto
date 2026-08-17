@@ -1,13 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
-from .models import Moeda, Transacao
+from .models import Moeda, Transacao, HistoricoPatrimonio
+from datetime import date # <-- Adicionado para pegar a data de hoje
 import requests
 import json
 
 @login_required(login_url='/admin/')
 def dashboard(request):
-    # seu código...
     moedas = Moeda.objects.all()
     patrimonio_investido = 0
     valor_atual_carteira = 0
@@ -42,10 +42,22 @@ def dashboard(request):
     lucro_prejuizo_rs = valor_atual_carteira - patrimonio_investido
     rentabilidade = (lucro_prejuizo_rs / patrimonio_investido) * 100 if patrimonio_investido > 0 else 0
 
-    # --- PREPARANDO DADOS PARA O GRÁFICO ---
-    # Só pega as moedas que você realmente tem saldo
+    # --- PREPARANDO DADOS PARA O GRÁFICO DE PIZZA ---
     nomes_grafico = [item['simbolo'] for item in detalhes_moedas if item['valor_atual'] > 0]
     valores_grafico = [float(item['valor_atual']) for item in detalhes_moedas if item['valor_atual'] > 0]
+
+    # --- NOVO: HISTÓRICO DE PATRIMÔNIO (GRÁFICO DE LINHA) ---
+    hoje = date.today()
+    # Salva ou atualiza o valor da carteira de hoje
+    HistoricoPatrimonio.objects.update_or_create(
+        data=hoje,
+        defaults={'valor_total': valor_atual_carteira}
+    )
+
+    # Busca os últimos 30 dias para enviar ao gráfico
+    historico = HistoricoPatrimonio.objects.all().order_by('data')[-30:]
+    datas_historico = json.dumps([h.data.strftime('%d/%m') for h in historico])
+    valores_historico = json.dumps([float(h.valor_total) for h in historico])
 
     contexto = {
         'patrimonio_investido': patrimonio_investido,
@@ -53,8 +65,10 @@ def dashboard(request):
         'lucro_prejuizo_rs': lucro_prejuizo_rs,
         'rentabilidade': rentabilidade,
         'detalhes_moedas': detalhes_moedas,
-        'nomes_grafico': json.dumps(nomes_grafico),      # Convertido para o JavaScript ler
-        'valores_grafico': json.dumps(valores_grafico),  # Convertido para o JavaScript ler
+        'nomes_grafico': json.dumps(nomes_grafico),
+        'valores_grafico': json.dumps(valores_grafico),
+        'datas_historico': datas_historico,      # <-- Adicionado para o HTML
+        'valores_historico': valores_historico,  # <-- Adicionado para o HTML
     }
     return render(request, 'index.html', contexto)
 

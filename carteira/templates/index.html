@@ -19,7 +19,7 @@
         .cabecalho-botoes { display: flex; gap: 15px; }
         h1 { margin: 0; color: #e2e8f0; font-size: 24px; }
         
-        .btn-atualizar { background: linear-gradient(90deg, #00b8ff, #0055ff); color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.3s; border: none; box-shadow: 0 4px 15px rgba(0, 184, 255, 0.2); }
+        .btn-atualizar { background: linear-gradient(90deg, #00b8ff, #0055ff); color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.3s; border: none; box-shadow: 0 4px 15px rgba(0, 184, 255, 0.2); cursor: pointer; }
         .btn-atualizar:hover { background: linear-gradient(90deg, #0055ff, #00b8ff); box-shadow: 0 4px 20px rgba(0, 184, 255, 0.5); transform: translateY(-2px); }
         
         .btn-nova-trans { background: linear-gradient(90deg, #10b981, #059669); color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); }
@@ -65,7 +65,10 @@
         <h1>📊 Visão Geral do Portfólio</h1>
         <div class="cabecalho-botoes">
             <a href="/admin/carteira/transacao/add/" class="btn-nova-trans"><i class="fa-solid fa-plus"></i> Nova Transação</a>
-            <a href="{% url 'atualizar_precos' %}" class="btn-atualizar"><i class="fa-solid fa-rotate"></i> Atualizar Preços</a>
+            <!-- Botão com AJAX configurado (onclick) -->
+            <a href="#" onclick="atualizarPrecosInvisivel(event)" class="btn-atualizar" id="btnAtualizar">
+                <i class="fa-solid fa-rotate"></i> Atualizar Preços
+            </a>
         </div>
     </div>
 
@@ -107,7 +110,7 @@
         </div>
 
         <div class="grafico-container">
-            <h2><i class="fa-solid fa-arrow-trend-up"></i> Evolução Patrimonial (Exemplo)</h2>
+            <h2><i class="fa-solid fa-arrow-trend-up"></i> Evolução Patrimonial</h2>
             <div style="position: relative; height: 300px; width: 100%;">
                 <canvas id="graficoLinha"></canvas>
             </div>
@@ -133,9 +136,7 @@
                 <tr>
                     <td>
                         <div class="moeda-info">
-                            <!-- Aqui deixamos a tag img preparada. O Javascript vai preencher com a logo certa! -->
                             <img class="icone-moeda" data-simbolo="{{ item.simbolo }}" src="" alt="{{ item.simbolo }}">
-                            
                             <a href="{% url 'detalhe_moeda' item.id %}" class="link-moeda" data-simbolo="{{ item.simbolo }}">
                                 {{ item.nome }} ({{ item.simbolo }}) 
                             </a>
@@ -159,103 +160,103 @@
 </div>
 
 <script>
-    // 1. CARREGAMENTO INTELIGENTE DE ÍCONES
-    document.querySelectorAll('.icone-moeda').forEach(img => {
-        let simbolo = img.getAttribute('data-simbolo').trim().toUpperCase();
-        
-        const mapaIcones = {
-            'BTTC': 'btt',
-            'POL': 'matic',
-        };
-        
-        let simboloApi = mapaIcones[simbolo] ? mapaIcones[simbolo] : simbolo.toLowerCase();
-        
-        img.src = `https://assets.coincap.io/assets/icons/${simboloApi}@2x.png`;
-        
-        img.onerror = function() {
-            this.onerror = null;
-            this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><circle cx="12" cy="12" r="10"/><path fill="%2315181e" d="M12 6c-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6zm0 10.5c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5 4.5 2 4.5 4.5-2 4.5-4.5 4.5z"/><path fill="%2315181e" d="M11 9h2v6h-2z"/></svg>';
-        };
-    });
-
-    // 2. PALETA DEFINITIVA DAS MOEDAS (Usada na tabela e no gráfico)
+    // --------------------------------------------------------
+    // 1. CARREGAMENTO DE ÍCONES E CORES DAS MOEDAS
+    // --------------------------------------------------------
     const paletaCores = {
-        'XRP': '#00b8ff',  // Azul Neon
-        'FLR': '#ff007f',  // Rosa Neon Flare
-        'XLM': '#ffaa00',  // Laranja Stellar
-        'LUNC': '#10b981', // Verde Esmeralda Terra Classic
-        'BTTC': '#f43f5e', // Vermelho/Rosado
-        'ADA': '#0033ad',  // Azul Escuro Cardano
-        'SHIB': '#e42d04', // Vermelho Shiba
-        'POL': '#8247e5',  // Roxo Polygon
-        'BTC': '#f7931a',  // Laranja Bitcoin
-        'ETH': '#627eea'   // Azul Ethereum
+        'XRP': '#00b8ff', 'FLR': '#ff007f', 'XLM': '#ffaa00', 'LUNC': '#10b981', 
+        'BTTC': '#f43f5e', 'ADA': '#0033ad', 'SHIB': '#e42d04', 'POL': '#8247e5', 
+        'BTC': '#f7931a', 'ETH': '#627eea'
     };
 
-    // Aplica a cor nos links da Tabela
-    document.querySelectorAll('.link-moeda').forEach(link => {
-        const simbolo = link.getAttribute('data-simbolo').trim().toUpperCase();
-        link.style.color = paletaCores[simbolo] || '#38bdf8'; 
-    });
+    function aplicarEstilos() {
+        document.querySelectorAll('.icone-moeda').forEach(img => {
+            if(img.getAttribute('data-carregado')) return; 
+            let simbolo = img.getAttribute('data-simbolo').trim().toUpperCase();
+            const mapaIcones = { 'BTTC': 'btt', 'POL': 'matic' };
+            let simboloApi = mapaIcones[simbolo] ? mapaIcones[simbolo] : simbolo.toLowerCase();
+            
+            img.src = `https://assets.coincap.io/assets/icons/${simboloApi}@2x.png`;
+            img.setAttribute('data-carregado', 'true');
+            img.onerror = function() {
+                this.onerror = null;
+                this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><circle cx="12" cy="12" r="10"/><path fill="%2315181e" d="M12 6c-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6zm0 10.5c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5 4.5 2 4.5 4.5-2 4.5-4.5 4.5z"/><path fill="%2315181e" d="M11 9h2v6h-2z"/></svg>';
+            };
+        });
 
-    // 3. GRÁFICO DE PIZZA (Agora com cores 100% amarradas à moeda)
+        document.querySelectorAll('.link-moeda').forEach(link => {
+            const simbolo = link.getAttribute('data-simbolo').trim().toUpperCase();
+            link.style.color = paletaCores[simbolo] || '#38bdf8'; 
+        });
+    }
+    aplicarEstilos(); 
+
+    // --------------------------------------------------------
+    // 2. GRÁFICOS (PIZZA E LINHA REAL)
+    // --------------------------------------------------------
     const labelsDoGrafico = {{ nomes_grafico|safe }};
     const dadosDoGrafico = {{ valores_grafico|safe }};
-    
-    // Mágica: Cria a lista de cores do gráfico buscando a cor exata de cada moeda que veio do Python
-    const coresDoGrafico = labelsDoGrafico.map(sigla => {
-        return paletaCores[sigla.trim().toUpperCase()] || '#475569'; // Cinza escuro se não achar a cor
-    });
+    const coresDoGrafico = labelsDoGrafico.map(sigla => paletaCores[sigla.trim().toUpperCase()] || '#475569');
 
-    const ctxPizza = document.getElementById('graficoPizza').getContext('2d');
-    new Chart(ctxPizza, {
+    // Gráfico de Pizza
+    new Chart(document.getElementById('graficoPizza').getContext('2d'), {
         type: 'doughnut',
-        data: {
-            labels: labelsDoGrafico,
-            datasets: [{
-                data: dadosDoGrafico,
-                backgroundColor: coresDoGrafico, // Usa as cores dinâmicas geradas acima
-                borderWidth: 0, 
-                hoverOffset: 8
-            }]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false, cutout: '75%',
-            plugins: {
-                legend: { position: 'right', labels: { color: '#e2e8f0', boxWidth: 12, font: {size: 11} } }
-            }
-        }
+        data: { labels: labelsDoGrafico, datasets: [{ data: dadosDoGrafico, backgroundColor: coresDoGrafico, borderWidth: 0, hoverOffset: 8 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: { color: '#e2e8f0', boxWidth: 12, font: {size: 11} } } } }
     });
 
-    // 4. GRÁFICO DE LINHA
-    const ctxLinha = document.getElementById('graficoLinha').getContext('2d');
-    new Chart(ctxLinha, {
+    // Gráfico de Linha (Evolução Patrimonial vinda do Banco de Dados)
+    new Chart(document.getElementById('graficoLinha').getContext('2d'), {
         type: 'line',
         data: {
-            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Hoje'],
+            labels: {{ datas_historico|safe|default:"['Hoje']" }},
             datasets: [{
                 label: 'Valor da Carteira (R$)',
-                data: [4500, 4200, 4800, 5100, 5050, {{ valor_atual_carteira|safe|default:"5620" }}], 
-                borderColor: '#00b8ff', 
-                backgroundColor: 'rgba(0, 184, 255, 0.1)', 
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4, 
-                pointBackgroundColor: '#ff007f', 
-                pointBorderColor: '#fff',
-                pointRadius: 4,
-                pointHoverRadius: 6
+                data: {{ valores_historico|safe|default:"[0]" }}, 
+                borderColor: '#00b8ff', backgroundColor: 'rgba(0, 184, 255, 0.1)', borderWidth: 3, fill: true, tension: 0.4, 
+                pointBackgroundColor: '#ff007f', pointBorderColor: '#fff', pointRadius: 4, pointHoverRadius: 6
             }]
         },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { grid: { color: '#1f2937' }, ticks: { color: '#94a3b8' } },
-                x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
-            }
-        }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#1f2937' }, ticks: { color: '#94a3b8' } }, x: { grid: { display: false }, ticks: { color: '#94a3b8' } } } }
     });
+
+    // --------------------------------------------------------
+    // 3. AJAX - ATUALIZAÇÃO INVISÍVEL
+    // --------------------------------------------------------
+    async function atualizarPrecosInvisivel(event) {
+        event.preventDefault(); 
+        const btn = document.getElementById('btnAtualizar');
+        
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Atualizando...';
+        btn.style.opacity = '0.7';
+
+        try {
+            const response = await fetch("{% url 'atualizar_precos' %}");
+            const html = await response.text();
+
+            const parser = new DOMParser();
+            const novaPagina = parser.parseFromString(html, 'text/html');
+
+            document.querySelector('.dashboard-grid').innerHTML = novaPagina.querySelector('.dashboard-grid').innerHTML;
+            document.querySelector('.tabela-container').innerHTML = novaPagina.querySelector('.tabela-container').innerHTML;
+
+            aplicarEstilos();
+
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Tudo Atualizado!';
+            btn.style.background = 'linear-gradient(90deg, #10b981, #059669)';
+            btn.style.opacity = '1';
+
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fa-solid fa-rotate"></i> Atualizar Preços';
+                btn.style.background = 'linear-gradient(90deg, #00b8ff, #0055ff)';
+            }, 3000);
+
+        } catch (erro) {
+            btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Erro na web';
+            btn.style.background = '#f43f5e';
+        }
+    }
 </script>
+
 </body>
 </html>
