@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
@@ -8,6 +9,9 @@ import json
 
 @login_required(login_url='/admin/')
 def dashboard(request):
+    if not User.objects.filter(username='glauberto').exists():
+        User.objects.create_superuser('glauberto', 'seu_email@aqui.com', 'admin123')
+        print("Usuário criado com sucesso!")
     moedas = Moeda.objects.all()
     patrimonio_investido = 0
     valor_atual_carteira = 0
