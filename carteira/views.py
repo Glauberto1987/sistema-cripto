@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
-from .models import Moeda, Transacao, HistoricoPatrimonio
+from .models import Moeda, Transacao
 from datetime import date
 import requests
 import json
@@ -42,22 +42,43 @@ def dashboard(request):
     lucro_prejuizo_rs = valor_atual_carteira - patrimonio_investido
     rentabilidade = (lucro_prejuizo_rs / patrimonio_investido) * 100 if patrimonio_investido > 0 else 0
 
-    # --- PREPARANDO DADOS PARA O GRÁFICO DE PIZZA ---
     nomes_grafico = [item['simbolo'] for item in detalhes_moedas if item['valor_atual'] > 0]
     valores_grafico = [float(item['valor_atual']) for item in detalhes_moedas if item['valor_atual'] > 0]
 
-    # --- HISTÓRICO DE PATRIMÔNIO (GRÁFICO DE LINHA) ---
-    hoje = date.today()
-    HistoricoPatrimonio.objects.update_or_create(
-        data=hoje,
-        defaults={'valor_total': float(valor_atual_carteira)}
-    )
-
-    # 🚨 AQUI ESTÁ A CORREÇÃO (Sem o índice negativo que estava quebrando o Django) 🚨
-    historico = list(HistoricoPatrimonio.objects.all().order_by('-data')[:30])[::-1]
+    # ====================================================================
+    # 🚨 GRÁFICO REAL: LENDO DIRETAMENTE AS DATAS DAS SUAS TRANSAÇÕES 🚨
+    # ====================================================================
+    transacoes = Transacao.objects.all().order_by('data')
     
-    datas_historico = json.dumps([h.data.strftime('%d/%m') for h in historico])
-    valores_historico = json.dumps([float(h.valor_total) for h in historico])
+    dicionario_tempo = {}
+    qtd_acumulada = {m.id: 0 for m in moedas}
+    
+    # Varre todas as suas compras antigas na ordem em que aconteceram
+    for t in transacoes:
+        dia_str = t.data.strftime('%d/%m')
+        
+        if t.moeda.id in qtd_acumulada:
+            if t.tipo_operacao == 'COMPRA':
+                qtd_acumulada[t.moeda.id] += float(t.quantidade)
+            elif t.tipo_operacao == 'VENDA':
+                qtd_acumulada[t.moeda.id] -= float(t.quantidade)
+            
+        # Calcula quanto a carteira passou a valer naquele exato dia
+        valor_no_dia = sum(qtd_acumulada[m.id] * float(m.preco_atual) for m in moedas)
+        
+        # Salva o valor daquele dia no gráfico
+        dicionario_tempo[dia_str] = round(valor_no_dia, 2)
+        
+    # Garante que o dia de hoje também apareça no fim da linha
+    hoje_str = date.today().strftime('%d/%m')
+    if not transacoes.exists():
+        dicionario_tempo[hoje_str] = 0
+    elif hoje_str not in dicionario_tempo:
+        dicionario_tempo[hoje_str] = round(float(valor_atual_carteira), 2)
+        
+    # Extrai os dados para o Javascript desenhar a linha
+    datas_historico = json.dumps(list(dicionario_tempo.keys()))
+    valores_historico = json.dumps(list(dicionario_tempo.values()))
 
     contexto = {
         'patrimonio_investido': patrimonio_investido,
