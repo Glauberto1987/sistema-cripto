@@ -1,0 +1,32 @@
+{% extends "admin/login.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* Aplica a sua imagem realista em toda a tela de fundo */
+    body.login {
+        background-image: url('{% static "logo.png" %}');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+    }
+    
+    /* Cria um efeito de vidro (desfoque e transparência) na caixa de login central */
+    .login #container {
+        background-color: rgba(20, 20, 20, 0.85); /* Fundo escuro transparente */
+        backdrop-filter: blur(10px); /* O desfoque mágico */
+        border-radius: 12px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+    }
+    
+    /* Escurece a barra superior da caixa de login onde está escrito Django */
+    #header {
+        background-color: rgba(10, 15, 25, 0.95);
+        border-radius: 12px 12px 0 0;
+    }
+</style>
+{% endblock %}
