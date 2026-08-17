@@ -6,8 +6,8 @@ import requests
 import json
 
 @login_required(login_url='/admin/')
-
 def dashboard(request):
+    # seu código...
     moedas = Moeda.objects.all()
     patrimonio_investido = 0
     valor_atual_carteira = 0
