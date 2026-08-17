@@ -159,104 +159,102 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
-    // --------------------------------------------------------
-    // 1. CARREGAMENTO DE ÍCONES E CORES DAS MOEDAS
-    // --------------------------------------------------------
-    const paletaCores = {
-        'XRP': '#00b8ff', 'FLR': '#ff007f', 'XLM': '#ffaa00', 'LUNC': '#10b981', 
-        'BTTC': '#f43f5e', 'ADA': '#0033ad', 'SHIB': '#e42d04', 'POL': '#8247e5', 
-        'BTC': '#f7931a', 'ETH': '#627eea'
-    };
+    // --- GRÁFICO DE PIZZA (DIVISÃO DA CARTEIRA) ---
+    var nomesGrafico = JSON.parse('{{ nomes_grafico|safe }}');
+    var valoresGrafico = JSON.parse('{{ valores_grafico|safe }}');
 
-    function aplicarEstilos() {
-        document.querySelectorAll('.icone-moeda').forEach(img => {
-            if(img.getAttribute('data-carregado')) return; 
-            let simbolo = img.getAttribute('data-simbolo').trim().toUpperCase();
-            const mapaIcones = { 'BTTC': 'btt', 'POL': 'matic' };
-            let simboloApi = mapaIcones[simbolo] ? mapaIcones[simbolo] : simbolo.toLowerCase();
-            
-            img.src = `https://assets.coincap.io/assets/icons/${simboloApi}@2x.png`;
-            img.setAttribute('data-carregado', 'true');
-            img.onerror = function() {
-                this.onerror = null;
-                this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2394a3b8"><circle cx="12" cy="12" r="10"/><path fill="%2315181e" d="M12 6c-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6zm0 10.5c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5 4.5 2 4.5 4.5-2 4.5-4.5 4.5z"/><path fill="%2315181e" d="M11 9h2v6h-2z"/></svg>';
-            };
-        });
-
-        document.querySelectorAll('.link-moeda').forEach(link => {
-            const simbolo = link.getAttribute('data-simbolo').trim().toUpperCase();
-            link.style.color = paletaCores[simbolo] || '#38bdf8'; 
-        });
-    }
-    aplicarEstilos(); 
-
-    // --------------------------------------------------------
-    // 2. GRÁFICOS (PIZZA E LINHA REAL)
-    // --------------------------------------------------------
-    const labelsDoGrafico = {{ nomes_grafico|safe }};
-    const dadosDoGrafico = {{ valores_grafico|safe }};
-    const coresDoGrafico = labelsDoGrafico.map(sigla => paletaCores[sigla.trim().toUpperCase()] || '#475569');
-
-    // Gráfico de Pizza
-    new Chart(document.getElementById('graficoPizza').getContext('2d'), {
-        type: 'doughnut',
-        data: { labels: labelsDoGrafico, datasets: [{ data: dadosDoGrafico, backgroundColor: coresDoGrafico, borderWidth: 0, hoverOffset: 8 }] },
-        options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: { color: '#e2e8f0', boxWidth: 12, font: {size: 11} } } } }
-    });
-
-    // Gráfico de Linha (Evolução Patrimonial vinda do Banco de Dados)
-    new Chart(document.getElementById('graficoLinha').getContext('2d'), {
-        type: 'line',
-        data: {
-            labels: {{ datas_historico|safe|default:"['Hoje']" }},
-            datasets: [{
-                label: 'Valor da Carteira (R$)',
-                data: {{ valores_historico|safe|default:"[0]" }}, 
-                borderColor: '#00b8ff', backgroundColor: 'rgba(0, 184, 255, 0.1)', borderWidth: 3, fill: true, tension: 0.4, 
-                pointBackgroundColor: '#ff007f', pointBorderColor: '#fff', pointRadius: 4, pointHoverRadius: 6
-            }]
+    var optionsPizza = {
+        series: valoresGrafico,
+        labels: nomesGrafico,
+        chart: {
+            type: 'donut',
+            height: 320,
+            foreColor: '#fff',
+            background: 'transparent'
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#1f2937' }, ticks: { color: '#94a3b8' } }, x: { grid: { display: false }, ticks: { color: '#94a3b8' } } } }
-    });
-
-    // --------------------------------------------------------
-    // 3. AJAX - ATUALIZAÇÃO INVISÍVEL
-    // --------------------------------------------------------
-    async function atualizarPrecosInvisivel(event) {
-        event.preventDefault(); 
-        const btn = document.getElementById('btnAtualizar');
-        
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Atualizando...';
-        btn.style.opacity = '0.7';
-
-        try {
-            const response = await fetch("{% url 'atualizar_precos' %}");
-            const html = await response.text();
-
-            const parser = new DOMParser();
-            const novaPagina = parser.parseFromString(html, 'text/html');
-
-            document.querySelector('.dashboard-grid').innerHTML = novaPagina.querySelector('.dashboard-grid').innerHTML;
-            document.querySelector('.tabela-container').innerHTML = novaPagina.querySelector('.tabela-container').innerHTML;
-
-            aplicarEstilos();
-
-            btn.innerHTML = '<i class="fa-solid fa-check"></i> Tudo Atualizado!';
-            btn.style.background = 'linear-gradient(90deg, #10b981, #059669)';
-            btn.style.opacity = '1';
-
-            setTimeout(() => {
-                btn.innerHTML = '<i class="fa-solid fa-rotate"></i> Atualizar Preços';
-                btn.style.background = 'linear-gradient(90deg, #00b8ff, #0055ff)';
-            }, 3000);
-
-        } catch (erro) {
-            btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Erro na web';
-            btn.style.background = '#f43f5e';
+        theme: {
+            mode: 'dark'
+        },
+        stroke: {
+            show: true,
+            colors: '#1f2937',
+            width: 2
+        },
+        dataLabels: {
+            enabled: false
         }
-    }
-</script>
+    };
+    // Atenção: Garanta que a div no seu HTML se chama id="grafico-pizza" ou ajuste aqui:
+    var chartPizza = new ApexCharts(document.querySelector("#grafico-pizza"), optionsPizza);
+    chartPizza.render();
 
+
+    // --- GRÁFICO DE LINHA (EVOLUÇÃO PATRIMONIAL) ---
+    var datasHistorico = JSON.parse('{{ datas_historico|safe }}');
+    var valoresHistorico = JSON.parse('{{ valores_historico|safe }}');
+    var tooltipsHistorico = JSON.parse('{{ tooltips_historico|safe }}'); // Nossa etiqueta nova!
+
+    var optionsLinha = {
+        series: [{
+            name: 'Patrimônio',
+            data: valoresHistorico
+        }],
+        chart: {
+            type: 'area',
+            height: 320,
+            foreColor: '#9ca3af',
+            toolbar: { show: false },
+            background: 'transparent'
+        },
+        colors: ['#00bfff'],
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 1,
+                opacityFrom: 0.5,
+                opacityTo: 0.05,
+                stops: [0, 100]
+            }
+        },
+        dataLabels: { enabled: false },
+        stroke: {
+            curve: 'smooth',
+            width: 3
+        },
+        markers: {
+            size: 5,
+            colors: ['#ff007f'],
+            strokeColors: '#fff',
+            strokeWidth: 2,
+            hover: { size: 7 }
+        },
+        xaxis: {
+            categories: datasHistorico,
+            tooltip: { enabled: false }
+        },
+        // 🚨 A MÁGICA DA ETIQUETA ACONTECE AQUI 🚨
+        tooltip: {
+            theme: 'dark',
+            y: {
+                formatter: function (val, { dataPointIndex }) {
+                    let detalhe = tooltipsHistorico[dataPointIndex];
+                    if (detalhe === "Nenhuma transação") {
+                        return "R$ " + val;
+                    }
+                    return "R$ " + val + "  ➔  " + detalhe;
+                }
+            }
+        },
+        grid: {
+            borderColor: '#374151',
+            strokeDashArray: 4,
+        }
+    };
+    // Atenção: Garanta que a div no seu HTML se chama id="grafico-linha" ou ajuste aqui:
+    var chartLinha = new ApexCharts(document.querySelector("#grafico-linha"), optionsLinha);
+    chartLinha.render();
+</script>
 </body>
 </html>
