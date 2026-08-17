@@ -46,37 +46,30 @@ def dashboard(request):
     valores_grafico = [float(item['valor_atual']) for item in detalhes_moedas if item['valor_atual'] > 0]
 
     # ====================================================================
-    # 🚨 GRÁFICO REAL: LENDO DIRETAMENTE AS DATAS DAS SUAS TRANSAÇÕES 🚨
+    # 🚨 GRÁFICO TRAVADO: EVOLUÇÃO DOS APORTES (NUNCA MUDA O PASSADO) 🚨
     # ====================================================================
     transacoes = Transacao.objects.all().order_by('data')
     
     dicionario_tempo = {}
-    qtd_acumulada = {m.id: 0 for m in moedas}
+    total_aportado = 0
     
-    # Varre todas as suas compras antigas na ordem em que aconteceram
     for t in transacoes:
         dia_str = t.data.strftime('%d/%m')
         
-        if t.moeda.id in qtd_acumulada:
-            if t.tipo_operacao == 'COMPRA':
-                qtd_acumulada[t.moeda.id] += float(t.quantidade)
-            elif t.tipo_operacao == 'VENDA':
-                qtd_acumulada[t.moeda.id] -= float(t.quantidade)
+        if t.tipo_operacao == 'COMPRA':
+            total_aportado += float(t.valor_total)
+        elif t.tipo_operacao == 'VENDA':
+            total_aportado -= float(t.valor_total)
             
-        # Calcula quanto a carteira passou a valer naquele exato dia
-        valor_no_dia = sum(qtd_acumulada[m.id] * float(m.preco_atual) for m in moedas)
+        # O segredo: salva no gráfico o exato dinheiro investido no dia! Nunca mais muda.
+        dicionario_tempo[dia_str] = round(total_aportado, 2)
         
-        # Salva o valor daquele dia no gráfico
-        dicionario_tempo[dia_str] = round(valor_no_dia, 2)
-        
-    # Garante que o dia de hoje também apareça no fim da linha
     hoje_str = date.today().strftime('%d/%m')
     if not transacoes.exists():
         dicionario_tempo[hoje_str] = 0
     elif hoje_str not in dicionario_tempo:
-        dicionario_tempo[hoje_str] = round(float(valor_atual_carteira), 2)
+        dicionario_tempo[hoje_str] = round(float(patrimonio_investido), 2)
         
-    # Extrai os dados para o Javascript desenhar a linha
     datas_historico = json.dumps(list(dicionario_tempo.keys()))
     valores_historico = json.dumps(list(dicionario_tempo.values()))
 
