@@ -9,9 +9,7 @@ import json
 
 @login_required(login_url='/admin/')
 def dashboard(request):
-    if not User.objects.filter(username='glauberto').exists():
-        User.objects.create_superuser('glauberto', 'seu_email@aqui.com', 'admin123')
-        print("Usuário criado com sucesso!")
+
     moedas = Moeda.objects.all()
     patrimonio_investido = 0
     valor_atual_carteira = 0
