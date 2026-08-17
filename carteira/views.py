@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
-from .models import Moeda, Transacao
+from .models import Moeda, Transacao, HistoricoPatrimonio
 from datetime import date
 import requests
 import json
@@ -46,32 +46,36 @@ def dashboard(request):
     valores_grafico = [float(item['valor_atual']) for item in detalhes_moedas if item['valor_atual'] > 0]
 
     # ====================================================================
-    # 🚨 GRÁFICO TRAVADO: EVOLUÇÃO DOS APORTES (NUNCA MUDA O PASSADO) 🚨
+    # 🚨 GRÁFICO PROFISSIONAL: PASSADO TRAVADO + PRESENTE FLUTUANTE 🚨
     # ====================================================================
-    transacoes = Transacao.objects.all().order_by('data')
-    
-    dicionario_tempo = {}
-    total_aportado = 0
-    
-    for t in transacoes:
-        dia_str = t.data.strftime('%d/%m')
-        
-        if t.tipo_operacao == 'COMPRA':
-            total_aportado += float(t.valor_total)
-        elif t.tipo_operacao == 'VENDA':
-            total_aportado -= float(t.valor_total)
+    hoje = date.today()
+
+    # 1. Reconstrói o passado travado baseado nas datas reais das suas Transações
+    if HistoricoPatrimonio.objects.count() <= 1:
+        HistoricoPatrimonio.objects.all().delete() # Limpa resquícios
+        transacoes_ord = Transacao.objects.all().order_by('data')
+        acumulado = 0
+        for t in transacoes_ord:
+            if t.tipo_operacao == 'COMPRA':
+                acumulado += float(t.valor_total)
+            elif t.tipo_operacao == 'VENDA':
+                acumulado -= float(t.valor_total)
             
-        # O segredo: salva no gráfico o exato dinheiro investido no dia! Nunca mais muda.
-        dicionario_tempo[dia_str] = round(total_aportado, 2)
-        
-    hoje_str = date.today().strftime('%d/%m')
-    if not transacoes.exists():
-        dicionario_tempo[hoje_str] = 0
-    elif hoje_str not in dicionario_tempo:
-        dicionario_tempo[hoje_str] = round(float(patrimonio_investido), 2)
-        
-    datas_historico = json.dumps(list(dicionario_tempo.keys()))
-    valores_historico = json.dumps(list(dicionario_tempo.values()))
+            HistoricoPatrimonio.objects.update_or_create(
+                data=t.data.date(),
+                defaults={'valor_total': round(acumulado, 2)}
+            )
+
+    # 2. Grava a foto de HOJE conectando com o Valor Atual de Mercado!
+    HistoricoPatrimonio.objects.update_or_create(
+        data=hoje,
+        defaults={'valor_total': round(float(valor_atual_carteira), 2)}
+    )
+
+    # 3. Busca a linha consolidada para o gráfico
+    historico = list(HistoricoPatrimonio.objects.all().order_by('-data')[:30])[::-1]
+    datas_historico = json.dumps([h.data.strftime('%d/%m') for h in historico])
+    valores_historico = json.dumps([float(h.valor_total) for h in historico])
 
     contexto = {
         'patrimonio_investido': patrimonio_investido,
