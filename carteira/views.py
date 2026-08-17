@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
 from .models import Moeda, Transacao, HistoricoPatrimonio
-from datetime import date # <-- Adicionado para pegar a data de hoje
+from datetime import date
 import requests
 import json
 
@@ -46,16 +46,16 @@ def dashboard(request):
     nomes_grafico = [item['simbolo'] for item in detalhes_moedas if item['valor_atual'] > 0]
     valores_grafico = [float(item['valor_atual']) for item in detalhes_moedas if item['valor_atual'] > 0]
 
-    # --- NOVO: HISTÓRICO DE PATRIMÔNIO (GRÁFICO DE LINHA) ---
+    # --- HISTÓRICO DE PATRIMÔNIO (GRÁFICO DE LINHA) ---
     hoje = date.today()
-    # Salva ou atualiza o valor da carteira de hoje
     HistoricoPatrimonio.objects.update_or_create(
         data=hoje,
-        defaults={'valor_total': valor_atual_carteira}
+        defaults={'valor_total': float(valor_atual_carteira)}
     )
 
-    # Busca os últimos 30 dias para enviar ao gráfico
-    historico = HistoricoPatrimonio.objects.all().order_by('data')[-30:]
+    # 🚨 AQUI ESTÁ A CORREÇÃO (Sem o índice negativo que estava quebrando o Django) 🚨
+    historico = list(HistoricoPatrimonio.objects.all().order_by('-data')[:30])[::-1]
+    
     datas_historico = json.dumps([h.data.strftime('%d/%m') for h in historico])
     valores_historico = json.dumps([float(h.valor_total) for h in historico])
 
@@ -67,8 +67,8 @@ def dashboard(request):
         'detalhes_moedas': detalhes_moedas,
         'nomes_grafico': json.dumps(nomes_grafico),
         'valores_grafico': json.dumps(valores_grafico),
-        'datas_historico': datas_historico,      # <-- Adicionado para o HTML
-        'valores_historico': valores_historico,  # <-- Adicionado para o HTML
+        'datas_historico': datas_historico,
+        'valores_historico': valores_historico,
     }
     return render(request, 'index.html', contexto)
 
