@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
+from django.contrib import messages
 from .models import Moeda, Transacao, HistoricoPatrimonio
 from datetime import date, datetime
 import requests
@@ -156,19 +157,37 @@ def atualizar_precos(request):
         'BTTC': 'bittorrent', 'ADA': 'cardano', 'FLR': 'flare-networks',
         'SHIB': 'shiba-inu', 'MATIC': 'polygon-ecosystem-token', 'POL': 'polygon-ecosystem-token'
     }
+    
     moedas = Moeda.objects.all()
     ids_para_buscar = [ids_map[m.simbolo.strip().upper()] for m in moedas if m.simbolo.strip().upper() in ids_map]
             
     if ids_para_buscar:
         url = f"https://api.coingecko.com/api/v3/simple/price?ids={','.join(ids_para_buscar)}&vs_currencies=brl"
+        
+        # Cabeçalho obrigatório para a API da CoinGecko não bloquear a requisição
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
+        
         try:
-            dados = requests.get(url, timeout=10).json()
-            for moeda in moedas:
-                simbolo = moeda.simbolo.strip().upper()
-                if simbolo in ids_map and ids_map[simbolo] in dados:
-                    moeda.preco_atual = dados[ids_map[simbolo]]['brl']
-                    moeda.save()
+            # Enviando a requisição com os headers incluídos
+            response = requests.get(url, headers=headers, timeout=10)
+            
+            if response.status_code == 200:
+                dados = response.json()
+                for moeda in moedas:
+                    simbolo = moeda.simbolo.strip().upper()
+                    if simbolo in ids_map and ids_map[simbolo] in dados:
+                        moeda.preco_atual = dados[ids_map[simbolo]]['brl']
+                        moeda.save()
+                messages.success(request, "Preços atualizados com sucesso!")
+            elif response.status_code == 429:
+                messages.error(request, "Limite de requisições da CoinGecko atingido. Aguarde 1 minuto.")
+            else:
+                messages.error(request, f"Erro na API da CoinGecko: Código {response.status_code}")
+                
         except Exception as e:
+            messages.error(request, f"Falha na conexão: {str(e)}")
             print(f"🚨 ERRO: {e}")
             
     return redirect('dashboard')
