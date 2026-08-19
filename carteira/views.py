@@ -48,7 +48,6 @@ def dashboard(request):
     nomes_grafico = [item['simbolo'] for item in detalhes_moedas if item['valor_atual'] > 0]
     valores_grafico = [float(item['valor_atual']) for item in detalhes_moedas if item['valor_atual'] > 0]
 
-    # --- HISTÓRICO PATRIMONIAL ---
     hoje = date.today()
 
     if HistoricoPatrimonio.objects.count() <= 1:
@@ -152,35 +151,34 @@ def detalhe_moeda(request, id):
     return render(request, 'detalhe.html', contexto)
 
 def atualizar_precos(request):
-    moedas = Moeda.objects.all()
-    
-    simbolos = []
-    for m in moedas:
-        s = m.simbolo.strip().upper()
-        simbolos.append('MATIC' if s == 'POL' else s)
+    try:
+        # 1. Busca a cotação do Dólar agora (AwesomeAPI nunca bloqueia)
+        dolar_req = requests.get('https://economia.awesomeapi.com.br/last/USD-BRL', timeout=10).json()
+        valor_dolar = float(dolar_req['USDBRL']['bid'])
         
-    if simbolos:
-        # Puxando da CryptoCompare (livre de bloqueios em nuvem)
-        url = f"https://min-api.cryptocompare.com/data/pricemulti?fsyms={','.join(simbolos)}&tsyms=BRL"
+        # 2. Busca todos os preços da Binance de uma vez só (Binance nunca bloqueia)
+        binance_req = requests.get('https://api.binance.com/api/v3/ticker/price', timeout=10).json()
+        precos_binance = {item['symbol']: float(item['price']) for item in binance_req}
         
-        try:
-            response = requests.get(url, timeout=10)
-            if response.status_code == 200:
-                dados = response.json()
-                
-                for moeda in moedas:
-                    simbolo_banco = moeda.simbolo.strip().upper()
-                    busca = 'MATIC' if simbolo_banco == 'POL' else simbolo_banco
-                    
-                    if busca in dados and 'BRL' in dados[busca]:
-                        moeda.preco_atual = dados[busca]['BRL']
-                        moeda.save()
-                        
-                messages.success(request, "Preços atualizados com sucesso!")
-            else:
-                messages.error(request, "Servidor de preços indisponível no momento.")
-        except Exception as e:
-            messages.error(request, "Falha de conexão com a API.")
-            print(f"🚨 ERRO: {e}")
+        moedas = Moeda.objects.all()
+        for moeda in moedas:
+            sigla = moeda.simbolo.strip().upper()
             
+            # Tratamento para as moedas que você tem
+            if sigla == 'POL': sigla = 'MATIC'
+            if sigla == 'BTT': sigla = 'BTTC'
+            
+            # Monta o par para buscar na Binance (ex: ADAUSDT, XRPUSDT)
+            par = f"{sigla}USDT"
+            
+            if par in precos_binance:
+                # Preço na Binance (Dólar) x Valor do Dólar = Preço em Reais
+                moeda.preco_atual = precos_binance[par] * valor_dolar
+                moeda.save()
+                
+        messages.success(request, "Preços atualizados via Binance com sucesso!")
+    except Exception as e:
+        messages.error(request, f"Erro de conexão: {str(e)}")
+        print(f"🚨 ERRO: {e}")
+        
     return redirect('dashboard')
