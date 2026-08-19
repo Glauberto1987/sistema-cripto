@@ -152,33 +152,28 @@ def detalhe_moeda(request, id):
 
 def atualizar_precos(request):
     try:
-        # 1. Busca a cotação do Dólar agora (AwesomeAPI nunca bloqueia)
+        # 1. Puxa o Dólar
         dolar_req = requests.get('https://economia.awesomeapi.com.br/last/USD-BRL', timeout=10).json()
         valor_dolar = float(dolar_req['USDBRL']['bid'])
         
-        # 2. Busca todos os preços da Binance de uma vez só (Binance nunca bloqueia)
-        binance_req = requests.get('https://api.binance.com/api/v3/ticker/price', timeout=10).json()
-        precos_binance = {item['symbol']: float(item['price']) for item in binance_req}
+        # 2. Puxa os preços da MEXC (Sem bloqueio de IP americano)
+        mexc_req = requests.get('https://api.mexc.com/api/v3/ticker/price', timeout=10).json()
+        precos_mexc = {item['symbol']: float(item['price']) for item in mexc_req}
         
         moedas = Moeda.objects.all()
         for moeda in moedas:
             sigla = moeda.simbolo.strip().upper()
             
-            # Tratamento para as moedas que você tem
             if sigla == 'POL': sigla = 'MATIC'
             if sigla == 'BTT': sigla = 'BTTC'
             
-            # Monta o par para buscar na Binance (ex: ADAUSDT, XRPUSDT)
             par = f"{sigla}USDT"
             
-            if par in precos_binance:
-                # Preço na Binance (Dólar) x Valor do Dólar = Preço em Reais
-                moeda.preco_atual = precos_binance[par] * valor_dolar
+            if par in precos_mexc:
+                moeda.preco_atual = precos_mexc[par] * valor_dolar
                 moeda.save()
                 
-        messages.success(request, "Preços atualizados via Binance com sucesso!")
     except Exception as e:
-        messages.error(request, f"Erro de conexão: {str(e)}")
-        print(f"🚨 ERRO: {e}")
+        print(f"ERRO DE API: {e}")
         
     return redirect('dashboard')
