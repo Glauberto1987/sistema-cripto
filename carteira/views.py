@@ -162,34 +162,53 @@ def detalhe_moeda(request, id):
 
 def atualizar_precos(request):
     try:
-        # Puxa o Dólar
-        dolar_req = requests.get('https://economia.awesomeapi.com.br/last/USD-BRL', timeout=10).json()
-        valor_dolar = float(dolar_req['USDBRL']['bid'])
-        
-        # Puxa os preços da Binance
-        binance_req = requests.get('https://api.binance.com/api/v3/ticker/price', timeout=10).json()
-        precos_binance = {item['symbol']: float(item['price']) for item in binance_req}
-        
+        # Tenta pegar o dólar
+        try:
+            dolar_req = requests.get('https://economia.awesomeapi.com.br/last/USD-BRL', timeout=10).json()
+            valor_dolar = float(dolar_req['USDBRL']['bid'])
+        except Exception as e:
+            messages.error(request, f"Falha ao buscar Dólar: {str(e)}")
+            return redirect('dashboard')
+            
+        # Tenta pegar a Binance
+        try:
+            binance_req = requests.get('https://api.binance.com/api/v3/ticker/price', timeout=10).json()
+            precos_binance = {item['symbol']: float(item['price']) for item in binance_req}
+        except Exception as e:
+            messages.error(request, f"Falha ao buscar Binance: {str(e)}")
+            return redirect('dashboard')
+            
         moedas = Moeda.objects.all()
+        moedas_atualizadas = 0
+        moedas_com_erro = []
+
         for moeda in moedas:
-            sigla = moeda.simbolo.strip().upper()
-            
-            # Ajustes das moedas
-            if sigla == 'POL': sigla = 'POL'
-            if sigla == 'MATIC': sigla = 'POL'
-            if sigla == 'BTT': sigla = 'BTTC'
-            
-            par = f"{sigla}USDT"
-            
-            if par in precos_binance:
-                preco_calculado = precos_binance[par] * valor_dolar
+            try:
+                sigla = moeda.simbolo.strip().upper()
                 
-                # A MAGICA AQUI: formata o número em string fixando 8 casas decimais, 
-                # impedindo completamente erros de Notação Científica no banco de dados.
-                moeda.preco_atual = f"{preco_calculado:.8f}"
-                moeda.save()
+                # Ajustes das moedas
+                if sigla == 'POL': sigla = 'POL'
+                if sigla == 'MATIC': sigla = 'POL'
+                if sigla == 'BTT': sigla = 'BTTC'
                 
+                par = f"{sigla}USDT"
+                
+                if par in precos_binance:
+                    preco_calculado = precos_binance[par] * valor_dolar
+                    moeda.preco_atual = f"{preco_calculado:.8f}"
+                    moeda.save()
+                    moedas_atualizadas += 1
+                else:
+                    moedas_com_erro.append(sigla)
+            except Exception as e:
+                messages.error(request, f"Erro ao salvar moeda {moeda.simbolo}: {str(e)}")
+
+        if moedas_atualizadas > 0:
+            messages.success(request, f"Preços de {moedas_atualizadas} moedas atualizados com sucesso!")
+        if moedas_com_erro:
+            messages.warning(request, f"Moedas não encontradas na Binance: {', '.join(moedas_com_erro)}")
+            
     except Exception as e:
-        print(f"ERRO CRÍTICO: {str(e)}")
+        messages.error(request, f"Erro Crítico Geral: {str(e)}")
         
     return redirect('dashboard')
