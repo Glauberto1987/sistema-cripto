@@ -176,37 +176,31 @@ def detalhe_moeda(request, id):
 
 def atualizar_precos(request):
     try:
-        # 1. BUSCA O VALOR DO DÓLAR (COM PLANO B)
+        # 1. BUSCA O VALOR DO DÓLAR
         try:
             valor_dolar = 0
-            # Tentativa 1: AwesomeAPI
             req1 = requests.get('https://economia.awesomeapi.com.br/last/USD-BRL', timeout=10)
             data1 = req1.json()
-            
             if 'USDBRL' in data1:
                 valor_dolar = float(data1['USDBRL']['bid'])
             else:
-                # Tentativa 2: Exchangerate API (Fallback se a AwesomeAPI bloquear)
                 req2 = requests.get('https://api.exchangerate-api.com/v4/latest/USD', timeout=10)
                 data2 = req2.json()
                 valor_dolar = float(data2['rates']['BRL'])
-                
         except Exception as e:
-            print(f"🔴 ERRO AO BUSCAR DÓLAR: {str(e)}")
             messages.error(request, f"Falha ao buscar cotação do Dólar: {str(e)}")
             return redirect('dashboard')
             
-        # 2. BUSCA OS PREÇOS NA BINANCE
+        # 2. BUSCA OS PREÇOS NA CORRETORA (MEXC, que não bloqueia os EUA)
         try:
-            binance_req = requests.get('https://api.binance.com/api/v3/ticker/price', timeout=10).json()
-            # Se a Binance retornar erro, ela manda um dicionário com 'code' em vez de uma lista
-            if isinstance(binance_req, dict) and 'code' in binance_req:
-                raise Exception(binance_req.get('msg', 'Erro desconhecido da Binance'))
+            corretora_req = requests.get('https://api.mexc.com/api/v3/ticker/price', timeout=10).json()
+            
+            if isinstance(corretora_req, dict) and 'code' in corretora_req:
+                raise Exception(corretora_req.get('msg', 'Erro desconhecido da corretora'))
                 
-            precos_binance = {item['symbol']: float(item['price']) for item in binance_req}
+            precos_corretora = {item['symbol']: float(item['price']) for item in corretora_req}
         except Exception as e:
-            print(f"🔴 ERRO NA BINANCE: {str(e)}")
-            messages.error(request, f"Falha ao conectar com a Binance: {str(e)}")
+            messages.error(request, f"Falha ao conectar com a corretora: {str(e)}")
             return redirect('dashboard')
             
         # 3. ATUALIZA AS MOEDAS NO BANCO
@@ -222,27 +216,26 @@ def atualizar_precos(request):
                 if sigla == 'POL': sigla = 'POL'
                 if sigla == 'MATIC': sigla = 'POL'
                 if sigla == 'BTT': sigla = 'BTTC'
+                if sigla == 'LUNC': sigla = 'LUNC' 
                 
                 par = f"{sigla}USDT"
                 
-                if par in precos_binance:
-                    preco_calculado = precos_binance[par] * valor_dolar
+                if par in precos_corretora:
+                    preco_calculado = precos_corretora[par] * valor_dolar
                     moeda.preco_atual = f"{preco_calculado:.8f}"
                     moeda.save()
                     moedas_atualizadas += 1
                 else:
                     moedas_com_erro.append(sigla)
             except Exception as e:
-                print(f"🔴 ERRO AO SALVAR MOEDA {moeda.simbolo}: {str(e)}")
                 messages.error(request, f"Erro ao salvar moeda {moeda.simbolo}: {str(e)}")
 
         if moedas_atualizadas > 0:
             messages.success(request, f"Preços de {moedas_atualizadas} moedas atualizados com sucesso!")
         if moedas_com_erro:
-            messages.warning(request, f"Moedas não encontradas na Binance: {', '.join(moedas_com_erro)}")
+            messages.warning(request, f"Moedas não encontradas: {', '.join(moedas_com_erro)}")
             
     except Exception as e:
-        print(f"🔴 ERRO CRÍTICO GERAL: {str(e)}")
         messages.error(request, f"Erro Crítico Geral: {str(e)}")
         
     return redirect('dashboard')
