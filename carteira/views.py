@@ -38,11 +38,11 @@ def dashboard(request):
             simbolo_lower = moeda.simbolo.strip().lower()
             icone_url = f"https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/{simbolo_lower}.png"
             
-            # Links diretos (CoinMarketCap CDN - 100% à prova de bloqueios)
+            # Links diretos para imagens (Usando repositório aberto para a Flare)
             if simbolo_lower == 'shib': icone_url = "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png"
             elif simbolo_lower == 'pol': icone_url = "https://s2.coinmarketcap.com/static/img/coins/64x64/3890.png"
             elif simbolo_lower == 'lunc': icone_url = "https://s2.coinmarketcap.com/static/img/coins/64x64/4172.png"
-            elif simbolo_lower == 'flr': icone_url = "https://s2.coinmarketcap.com/static/img/coins/64x64/22845.png"
+            elif simbolo_lower == 'flr': icone_url = "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/flare/info/logo.png"
             # -----------------------------------------
 
             detalhes_moedas.append({
@@ -55,7 +55,7 @@ def dashboard(request):
                 'valor_atual': float(valor_atual_moeda),
                 'lucro': float(lucro_moeda),
                 'rentabilidade': float(rentabilidade_moeda),
-                'icone': icone_url  # Enviando a URL do ícone para o HTML
+                'icone': icone_url  
             })
             
     lucro_prejuizo_rs = float(valor_atual_carteira) - float(patrimonio_investido)
