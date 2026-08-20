@@ -41,7 +41,7 @@ def dashboard(request):
             # Links diretos (CryptoLogos e CoinMarketCap - à prova de bloqueios)
             if simbolo_lower == 'shib': icone_url = "https://cryptologos.cc/logos/shiba-inu-shib-logo.png"
             elif simbolo_lower == 'pol': icone_url = "https://cryptologos.cc/logos/polygon-matic-logo.png"
-            elif simbolo_lower == 'lunc': icone_url = "https://cryptologos.cc/logos/terra-classic-lunc-logo.png"
+            elif simbolo_lower == 'lunc': icone_url = "https://cryptologos.cc/logos/terra-luna-classic-lunc-logo.png"
             elif simbolo_lower == 'flr': icone_url = "https://cryptologos.cc/logos/flare-flr-logo.png"
             # -----------------------------------------
 
