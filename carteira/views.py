@@ -215,7 +215,7 @@ def atualizar_precos(request):
                 # Ajustes de símbolos
                 if sigla == 'POL': sigla = 'POL'
                 if sigla == 'MATIC': sigla = 'POL'
-                if sigla == 'BTT': sigla = 'BTTC'
+                #if sigla == 'BTT': sigla = 'BTTC'
                 if sigla == 'LUNC': sigla = 'LUNC' 
                 
                 par = f"{sigla}USDT"
