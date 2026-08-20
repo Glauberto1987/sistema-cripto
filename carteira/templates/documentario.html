@@ -55,8 +55,7 @@
         </div>
     </nav>
 
-    <!-- TICKER TAPE (MERCADO MACRO: BTC, NASD, OURO, PETRÓLEO, XRP) -->
-    <!-- TICKER TAPE (MERCADO MACRO: BTC, NASD, OURO, PETRÓLEO, XRP) -->
+    <!-- TICKER TAPE (MERCADO MACRO COM NASDAQ CORRIGIDO) -->
     <div style="padding-top: 74px; background-color: #000000; border-bottom: 1px solid #00b8ff;">
         <div class="tradingview-widget-container">
             <div class="tradingview-widget-container__widget"></div>
@@ -86,7 +85,7 @@
         </div>
     </div>
 
-    <!-- XRP (Verde Claro do Gráfico) -->
+    <!-- XRP -->
     <div class="coin-section" id="xrp">
         <div class="container">
             <div class="row">
@@ -106,7 +105,7 @@
         </div>
     </div>
 
-    <!-- XLM (Verde Água/Teal do Gráfico) -->
+    <!-- XLM -->
     <div class="coin-section bg-dark" id="xlm">
         <div class="container">
             <div class="row">
@@ -126,7 +125,7 @@
         </div>
     </div>
 
-    <!-- FLR (Verde Oliva do Gráfico) -->
+    <!-- FLR -->
     <div class="coin-section" id="flare">
         <div class="container">
             <div class="row">
@@ -146,7 +145,7 @@
         </div>
     </div>
 
-    <!-- ADA (Verde Piscina Claro do Gráfico) -->
+    <!-- ADA -->
     <div class="coin-section bg-dark" id="ada">
         <div class="container">
             <div class="row">
@@ -166,7 +165,7 @@
         </div>
     </div>
 
-    <!-- SHIB (Cinza Azulado do Gráfico) -->
+    <!-- SHIB -->
     <div class="coin-section" id="shib">
         <div class="container">
             <div class="row">
@@ -186,7 +185,7 @@
         </div>
     </div>
 
-    <!-- SMART MONEY INSTITUCIONAL (Azul Neon) -->
+    <!-- SMART MONEY INSTITUCIONAL -->
     <div class="coin-section" id="institucional" style="background-color: #080a0c; border-top: 3px solid #00b8ff; padding-top: 80px;">
         <div class="container">
             <div class="text-center mb-5">
@@ -229,12 +228,15 @@
         <p class="text-muted">© 2026 CriptoDocs. Inteligência e Monitoramento de Mercado.</p>
     </footer>
 
-    <!-- SCRIPT COM A INTELIGÊNCIA DAS CORES DO GRÁFICO -->
+    <!-- SCRIPT COM A INTELIGÊNCIA DO RADAR ATUALIZADA (30 DIAS) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         async function buscarNoticias(termoDeBusca, tituloMoeda, elementoId, corDaMoeda) {
             const container = document.getElementById(elementoId);
-            const buscaRecente = termoDeBusca + " when:7d";
+            
+            // Alterado de 7d para 30d para puxar muito mais notícias de todas as moedas!
+            const buscaRecente = termoDeBusca + " when:30d"; 
+            
             const cacheBuster = new Date().getTime();
             const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(buscaRecente)}&hl=pt-BR&gl=BR&ceid=BR:pt-419&_=${cacheBuster}`;
             const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
@@ -260,17 +262,20 @@
                     });
                     container.innerHTML = htmlContent;
                 } else {
-                    container.innerHTML = `<h5 class="fw-bold mb-4" style="color: ${corDaMoeda};"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${tituloMoeda}</h5><p class="text-muted">Nenhuma grande movimentação detectada.</p>`;
+                    container.innerHTML = `<h5 class="fw-bold mb-4" style="color: ${corDaMoeda};"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${tituloMoeda}</h5><p class="text-muted">Nenhuma grande movimentação detectada recentemente.</p>`;
                 }
             } catch (error) {
-                container.innerHTML = `<h5 class="fw-bold mb-4" style="color: ${corDaMoeda};"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${tituloMoeda}</h5><p class="text-danger">Erro de conexão.</p>`;
+                container.innerHTML = `<h5 class="fw-bold mb-4" style="color: ${corDaMoeda};"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${tituloMoeda}</h5><p class="text-danger">Erro de conexão com o radar.</p>`;
             }
         }
 
         document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => buscarNoticias("XRP", "XRP", "news-xrp", "#94c020"), 0);
             setTimeout(() => buscarNoticias("Stellar XLM", "Stellar (XLM)", "news-xlm", "#26a69a"), 800);
-            setTimeout(() => buscarNoticias("Flare Network criptomoeda", "Flare (FLR)", "news-flr", "#8bc34a"), 1600);
+            
+            // Termo da Flare alterado para pegar mais resultados precisos
+            setTimeout(() => buscarNoticias("Flare Network OR criptomoeda FLR", "Flare (FLR)", "news-flr", "#8bc34a"), 1600);
+            
             setTimeout(() => buscarNoticias("Cardano ADA", "Cardano (ADA)", "news-ada", "#4dc2a6"), 2400);
             setTimeout(() => buscarNoticias("Shiba Inu SHIB", "Shiba Inu (SHIB)", "news-shib", "#6c7a89"), 3200);
             setTimeout(() => buscarNoticias("BlackRock Bitcoin", "Smart Money (Wall Street)", "news-wallstreet", "#00b8ff"), 4000);
