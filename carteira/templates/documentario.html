@@ -228,14 +228,14 @@
         <p class="text-muted">© 2026 CriptoDocs. Inteligência e Monitoramento de Mercado.</p>
     </footer>
 
-    <!-- SCRIPT COM A INTELIGÊNCIA DO RADAR ATUALIZADA (30 DIAS) -->
+    <!-- SCRIPT COM O RADAR ATUALIZADO (Sem limite de tempo e com Anti-Spam) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         async function buscarNoticias(termoDeBusca, tituloMoeda, elementoId, corDaMoeda) {
             const container = document.getElementById(elementoId);
             
-            // Alterado de 7d para 30d para puxar muito mais notícias de todas as moedas!
-            const buscaRecente = termoDeBusca + " when:30d"; 
+            // Sem trava de tempo! Busca direto a palavra-chave.
+            const buscaRecente = termoDeBusca; 
             
             const cacheBuster = new Date().getTime();
             const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(buscaRecente)}&hl=pt-BR&gl=BR&ceid=BR:pt-419&_=${cacheBuster}`;
@@ -255,14 +255,14 @@
                             <a href="${item.link}" target="_blank" class="text-decoration-none">
                                 <div class="news-item" style="border-left-color: ${corDaMoeda};">
                                     <h6>${item.title}</h6>
-                                    <small><i class="fa-regular fa-clock"></i> Atualizado em: ${dataPostagem}</small>
+                                    <small><i class="fa-regular fa-clock"></i> Publicado em: ${dataPostagem}</small>
                                 </div>
                             </a>
                         `;
                     });
                     container.innerHTML = htmlContent;
                 } else {
-                    container.innerHTML = `<h5 class="fw-bold mb-4" style="color: ${corDaMoeda};"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${tituloMoeda}</h5><p class="text-muted">Nenhuma grande movimentação detectada recentemente.</p>`;
+                    container.innerHTML = `<h5 class="fw-bold mb-4" style="color: ${corDaMoeda};"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${tituloMoeda}</h5><p class="text-muted">Nenhuma notícia encontrada no momento.</p>`;
                 }
             } catch (error) {
                 container.innerHTML = `<h5 class="fw-bold mb-4" style="color: ${corDaMoeda};"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${tituloMoeda}</h5><p class="text-danger">Erro de conexão com o radar.</p>`;
@@ -270,15 +270,13 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            setTimeout(() => buscarNoticias("XRP", "XRP", "news-xrp", "#94c020"), 0);
-            setTimeout(() => buscarNoticias("Stellar XLM", "Stellar (XLM)", "news-xlm", "#26a69a"), 800);
-            
-            // Termo da Flare alterado para pegar mais resultados precisos
-            setTimeout(() => buscarNoticias("Flare Network OR criptomoeda FLR", "Flare (FLR)", "news-flr", "#8bc34a"), 1600);
-            
-            setTimeout(() => buscarNoticias("Cardano ADA", "Cardano (ADA)", "news-ada", "#4dc2a6"), 2400);
+            // Buscas limpas e focadas para puxar as notícias reais
+            setTimeout(() => buscarNoticias("XRP Ripple", "XRP", "news-xrp", "#94c020"), 0);
+            setTimeout(() => buscarNoticias("Stellar Lumens XLM", "Stellar (XLM)", "news-xlm", "#26a69a"), 800);
+            setTimeout(() => buscarNoticias("Flare Network FLR -Converter -Bybit", "Flare (FLR)", "news-flr", "#8bc34a"), 1600);
+            setTimeout(() => buscarNoticias("Cardano ADA blockchain", "Cardano (ADA)", "news-ada", "#4dc2a6"), 2400);
             setTimeout(() => buscarNoticias("Shiba Inu SHIB", "Shiba Inu (SHIB)", "news-shib", "#6c7a89"), 3200);
-            setTimeout(() => buscarNoticias("BlackRock Bitcoin", "Smart Money (Wall Street)", "news-wallstreet", "#00b8ff"), 4000);
+            setTimeout(() => buscarNoticias("BlackRock ETF Bitcoin", "Smart Money (Wall Street)", "news-wallstreet", "#00b8ff"), 4000);
         });
     </script>
 </body>
