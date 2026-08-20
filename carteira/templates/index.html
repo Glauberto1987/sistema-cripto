@@ -13,9 +13,13 @@
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         
         .cabecalho { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2937; padding-bottom: 10px; margin-bottom: 20px; }
-        .cabecalho-botoes { display: flex; gap: 15px; }
+        .cabecalho-botoes { display: flex; gap: 15px; align-items: center; }
         h1 { margin: 0; color: #e2e8f0; font-size: 24px; }
         
+        /* CSS do NOVO Botão do CriptoDocs */
+        .btn-docs { background: linear-gradient(90deg, #8b5cf6, #6d28d9); color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.3s; border: none; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2); cursor: pointer; }
+        .btn-docs:hover { background: linear-gradient(90deg, #6d28d9, #8b5cf6); box-shadow: 0 4px 20px rgba(139, 92, 246, 0.5); transform: translateY(-2px); color: white; }
+
         .btn-atualizar { background: linear-gradient(90deg, #00b8ff, #0055ff); color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.3s; border: none; box-shadow: 0 4px 15px rgba(0, 184, 255, 0.2); cursor: pointer; }
         .btn-atualizar:hover { background: linear-gradient(90deg, #0055ff, #00b8ff); box-shadow: 0 4px 20px rgba(0, 184, 255, 0.5); transform: translateY(-2px); }
         
@@ -57,6 +61,10 @@
     <div class="cabecalho">
         <h1>📊 Visão Geral do Portfólio</h1>
         <div class="cabecalho-botoes">
+            
+            <!-- O NOVO BOTÃO DA INTELIGÊNCIA DE MERCADO (CRIPTODOCS) AQUI -->
+            <a href="/documentario/" class="btn-docs"><i class="fa-solid fa-film"></i> CriptoDocs</a>
+
             <a href="/admin/carteira/transacao/add/" class="btn-nova-trans"><i class="fa-solid fa-plus"></i> Nova Transação</a>
             <a href="{% url 'atualizar_precos' %}" class="btn-atualizar" id="btnAtualizar">
                 <i class="fa-solid fa-rotate"></i> Atualizar Preços
@@ -173,7 +181,6 @@
 </div>
 
 <script>
-    // 1. O jeito correto e seguro de passar variáveis do Django para o JavaScript (sem aspas)
     var nomesGrafico = {{ nomes_grafico|safe }};
     var valoresGrafico = {{ valores_grafico|safe }};
 
@@ -182,7 +189,6 @@
         labels: nomesGrafico,
         chart: { type: 'donut', height: 320, foreColor: '#fff', background: 'transparent' },
         theme: { mode: 'dark' },
-        // 2. O GRANDE VILÃO ESTAVA AQUI: O ApexCharts exige colchetes na cor do stroke!
         stroke: { show: true, colors: ['#1f2937'], width: 2 },
         dataLabels: { enabled: false }
     };

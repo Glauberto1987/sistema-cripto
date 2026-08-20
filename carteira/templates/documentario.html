@@ -9,15 +9,14 @@
     <style>
         body { background-color: #050505; color: #e2e8f0; font-family: 'Segoe UI', Tahoma, sans-serif; overflow-x: hidden; }
         
-        /* Navbar com Menu de Navegação */
         .navbar { background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); position: absolute; width: 100%; z-index: 100; padding: 15px 0; }
         .nav-link { color: #94a3b8 !important; font-weight: bold; margin-right: 15px; transition: 0.3s; }
-        .nav-link:hover { color: #00b8ff !important; }
+        .nav-link:hover { color: white !important; }
         
         .btn-login { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 8px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; transition: 0.3s; }
         .btn-login:hover { background: #00b8ff; color: white; border-color: #00b8ff; box-shadow: 0 0 15px #00b8ff; }
         
-        .hero { height: 70vh; background: linear-gradient(to top, #050505, transparent), url('https://images.unsplash.com/photo-1639762681485-074b7f4ec651?q=80&w=2000&auto=format&fit=crop') center/cover; display: flex; align-items: flex-end; padding-bottom: 50px; }
+        .hero { height: 70vh; background: linear-gradient(to top, #050505, transparent), url('https://images.pexels.com/photos/730564/pexels-photo-730564.jpeg?auto=compress&cs=tinysrgb&w=2000') center/cover; display: flex; align-items: flex-end; padding-bottom: 50px; }
         .hero-title { font-size: 4rem; font-weight: 900; text-transform: uppercase; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
         
         .coin-section { padding: 60px 0; border-bottom: 1px solid #1f2937; }
@@ -26,15 +25,14 @@
         
         .history-text p { font-size: 1.1rem; line-height: 1.7; color: #cbd5e1; }
         
-        /* Fotos Estilo Documentário */
         .doc-image { width: 100%; border-radius: 12px; border: 1px solid #1f2937; margin-bottom: 20px; opacity: 0.8; transition: 0.3s; }
-        .doc-image:hover { opacity: 1; border-color: #00b8ff; box-shadow: 0 0 20px rgba(0, 184, 255, 0.2); }
+        .doc-image:hover { opacity: 1; box-shadow: 0 0 20px rgba(255, 255, 255, 0.1); }
         
-        /* Design do Agregador de Notícias Nativo */
-        .news-box { background: #0b0d10; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; height: 450px; overflow-y: auto; }
+        .news-box { background: #0b0d10; border: 2px solid #1f2937; border-radius: 12px; padding: 20px; height: 450px; overflow-y: auto; transition: 0.3s; }
         .news-box::-webkit-scrollbar { width: 6px; }
         .news-box::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
-        .news-item { background: rgba(255,255,255,0.03); border-left: 4px solid #00b8ff; border-radius: 6px; padding: 15px; margin-bottom: 12px; transition: 0.2s; }
+        
+        .news-item { background: rgba(255,255,255,0.03); border-left: 4px solid #1f2937; border-radius: 6px; padding: 15px; margin-bottom: 12px; transition: 0.2s; }
         .news-item:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); }
         .news-item h6 { font-size: 0.95rem; font-weight: bold; color: #f8fafc; margin-bottom: 5px; line-height: 1.4; }
         .news-item small { color: #64748b; font-size: 0.8rem; }
@@ -42,22 +40,16 @@
 </head>
 <body>
 
-    <!-- NAVBAR ATUALIZADA COM MENU -->
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand text-white fw-bold me-5" href="#"><i class="fa-solid fa-film text-info"></i> CriptoDocs</a>
-            
-            <button class="navbar-toggler bg-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="#xrp"><i class="fa-solid fa-coins"></i> Altcoins</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#institucional"><i class="fa-solid fa-building-columns"></i> Smart Money</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#xrp">Altcoins</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#institucional">Smart Money</a></li>
                 </ul>
                 <div class="ms-auto mt-2 mt-lg-0">
-                    <a href="/admin/login/" class="btn-login"><i class="fa-solid fa-lock"></i> Acessar Painel</a>
+                    <a href="/admin/login/" class="btn-login"><i class="fa-solid fa-chart-pie"></i> Meu Painel de Controle</a>
                 </div>
             </div>
         </div>
@@ -70,103 +62,109 @@
         </div>
     </div>
 
-    <!-- MOEDAS (XRP, XLM, FLR, ADA, SHIB) -->
-    <!-- XRP -->
+    <!-- XRP (Verde Claro do Gráfico) -->
     <div class="coin-section" id="xrp">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 mb-4">
-                    <h2 class="coin-title"><img src="https://cryptologos.cc/logos/xrp-xrp-logo.png" class="coin-logo"> XRP</h2>
+                    <h2 class="coin-title"><img src="https://cryptologos.cc/logos/xrp-xrp-logo.png" class="coin-logo"> <span style="color: #94c020;">XRP</span></h2>
                     <div class="history-text">
-                        <p><strong>A Base Legal:</strong> A batalha da SEC acabou e a XRP venceu, estabelecendo a clareza jurídica definitiva que o dinheiro institucional precisava para entrar no mercado.</p>
-                        <p><strong>Cenário Atual:</strong> O lançamento oficial da stablecoin RLUSD mudou as regras do jogo. A rede agora é o motor de liquidez para corporações globais, mesclando o Dólar digital com transações na velocidade da luz.</p>
+                        <p><strong>A Base Legal:</strong> A batalha da SEC acabou e a XRP venceu, estabelecendo a clareza jurídica definitiva que o dinheiro institucional precisava.</p>
+                        <p><strong>Cenário Atual:</strong> O lançamento da stablecoin RLUSD mudou as regras do jogo. A rede é o motor de liquidez para corporações globais.</p>
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="news-box" id="news-xrp"><div class="text-center mt-5 text-muted"><div class="spinner-border text-info mb-2"></div><br>Buscando...</div></div>
+                    <div class="news-box" id="news-xrp" style="border-color: #94c020;">
+                        <div class="text-center mt-5 text-muted"><div class="spinner-border" style="color: #94c020;"></div><br>Buscando...</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- XLM -->
+    <!-- XLM (Verde Água/Teal do Gráfico) -->
     <div class="coin-section bg-dark" id="xlm">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 mb-4 order-lg-2">
-                    <h2 class="coin-title"><img src="https://cryptologos.cc/logos/stellar-xlm-logo.png" class="coin-logo"> Stellar (XLM)</h2>
+                    <h2 class="coin-title"><img src="https://cryptologos.cc/logos/stellar-xlm-logo.png" class="coin-logo"> <span style="color: #26a69a;">Stellar (XLM)</span></h2>
                     <div class="history-text">
-                        <p><strong>Além dos Pagamentos:</strong> A atualização "Soroban" consolidou a rede no mundo bilionário do DeFi, deixando para trás a ideia de ser apenas uma via de pagamento P2P.</p>
-                        <p><strong>Cenário Atual:</strong> A rede está engolindo o mercado de CBDCs (Moedas Digitais de Bancos Centrais) na África e América Latina, servindo como a principal ponte entre moedas fiduciárias e a blockchain.</p>
+                        <p><strong>Além dos Pagamentos:</strong> A atualização "Soroban" consolidou a rede no mundo bilionário do DeFi, deixando para trás a ideia de ser apenas P2P.</p>
+                        <p><strong>Cenário Atual:</strong> A rede está engolindo o mercado de CBDCs (Moedas Digitais de Bancos Centrais) servindo como a principal ponte para a blockchain.</p>
                     </div>
                 </div>
                 <div class="col-lg-6 order-lg-1">
-                    <div class="news-box" id="news-xlm"><div class="text-center mt-5 text-muted"><div class="spinner-border text-info mb-2"></div><br>Buscando...</div></div>
+                    <div class="news-box" id="news-xlm" style="border-color: #26a69a;">
+                        <div class="text-center mt-5 text-muted"><div class="spinner-border" style="color: #26a69a;"></div><br>Buscando...</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- FLR -->
+    <!-- FLR (Verde Oliva do Gráfico) -->
     <div class="coin-section" id="flare">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 mb-4">
-                    <h2 class="coin-title"><img src="https://cryptologos.cc/logos/flare-flr-logo.png" class="coin-logo"> Flare (FLR)</h2>
+                    <h2 class="coin-title"><img src="https://cryptologos.cc/logos/flare-flr-logo.png" class="coin-logo"> <span style="color: #8bc34a;">Flare (FLR)</span></h2>
                     <div class="history-text">
-                        <p><strong>A Internet dos Dados:</strong> Hoje, a Flare é o maior protocolo de dados descentralizados do mercado, com seus oráculos nativos alimentando o mercado DeFi e a Inteligência Artificial.</p>
-                        <p><strong>Cenário Atual:</strong> A revolução FAssets está ativa. A Flare permite que moedas gigantescas, mas sem contratos inteligentes nativos (como o Bitcoin), sejam usadas para gerar rendimentos pesados.</p>
+                        <p><strong>A Internet dos Dados:</strong> Hoje, a Flare é o maior protocolo de dados descentralizados, com seus oráculos alimentando o mercado DeFi e a Inteligência Artificial.</p>
+                        <p><strong>Cenário Atual:</strong> A revolução FAssets está ativa, permitindo que moedas gigantescas como o Bitcoin gerem rendimentos na Web3.</p>
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="news-box" id="news-flr"><div class="text-center mt-5 text-muted"><div class="spinner-border text-info mb-2"></div><br>Buscando...</div></div>
+                    <div class="news-box" id="news-flr" style="border-color: #8bc34a;">
+                        <div class="text-center mt-5 text-muted"><div class="spinner-border" style="color: #8bc34a;"></div><br>Buscando...</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ADA -->
+    <!-- ADA (Verde Piscina Claro do Gráfico) -->
     <div class="coin-section bg-dark" id="ada">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 mb-4 order-lg-2">
-                    <h2 class="coin-title"><img src="https://cryptologos.cc/logos/cardano-ada-logo.png" class="coin-logo"> Cardano (ADA)</h2>
+                    <h2 class="coin-title"><img src="https://cryptologos.cc/logos/cardano-ada-logo.png" class="coin-logo"> <span style="color: #4dc2a6;">Cardano (ADA)</span></h2>
                     <div class="history-text">
-                        <p><strong>A Era Voltaire:</strong> Esqueça a governança centralizada. Através da atualização Chang, o criador Charles Hoskinson passou as chaves da rede integralmente para a comunidade com uma Constituição On-Chain.</p>
-                        <p><strong>Cenário Atual:</strong> Focada em criar sistemas econômicos autossustentáveis, a Cardano está fechando parcerias de alto nível para infraestrutura tecnológica e identidade digital em países em desenvolvimento.</p>
+                        <p><strong>A Era Voltaire:</strong> Esqueça a governança centralizada. A comunidade dita as regras com uma verdadeira Constituição On-Chain.</p>
+                        <p><strong>Cenário Atual:</strong> Focada em sistemas autossustentáveis, a Cardano avança em parcerias governamentais para identidade digital e infraestrutura.</p>
                     </div>
                 </div>
                 <div class="col-lg-6 order-lg-1">
-                    <div class="news-box" id="news-ada"><div class="text-center mt-5 text-muted"><div class="spinner-border text-info mb-2"></div><br>Buscando...</div></div>
+                    <div class="news-box" id="news-ada" style="border-color: #4dc2a6;">
+                        <div class="text-center mt-5 text-muted"><div class="spinner-border" style="color: #4dc2a6;"></div><br>Buscando...</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SHIB -->
+    <!-- SHIB (Cinza Azulado do Gráfico) -->
     <div class="coin-section" id="shib">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 mb-4">
-                    <h2 class="coin-title"><img src="https://cryptologos.cc/logos/shiba-inu-shib-logo.png" class="coin-logo"> Shiba Inu (SHIB)</h2>
+                    <h2 class="coin-title"><img src="https://cryptologos.cc/logos/shiba-inu-shib-logo.png" class="coin-logo"> <span style="color: #6c7a89;">Shiba Inu (SHIB)</span></h2>
                     <div class="history-text">
                         <p><strong>Fim da Era Meme:</strong> A Shiba Inu deixou de ser uma piada na internet para se tornar um ecossistema complexo governado pelo poderoso "ShibArmy".</p>
-                        <p><strong>Cenário Atual:</strong> A rede Layer-2 nativa (Shibarium) está processando milhões de transações diárias, viabilizando um sistema gigantesco de queima automatizada (burns) que reduz a oferta da moeda.</p>
+                        <p><strong>Cenário Atual:</strong> A rede Layer-2 (Shibarium) processa milhões de transações diárias, viabilizando um sistema gigantesco de queima (burns).</p>
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="news-box" id="news-shib"><div class="text-center mt-5 text-muted"><div class="spinner-border text-info mb-2"></div><br>Buscando...</div></div>
+                    <div class="news-box" id="news-shib" style="border-color: #6c7a89;">
+                        <div class="text-center mt-5 text-muted"><div class="spinner-border" style="color: #6c7a89;"></div><br>Buscando...</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- NOVA CENTRAL: SMART MONEY (WALL STREET)    -->
-    <!-- ========================================== -->
+    <!-- SMART MONEY INSTITUCIONAL (Azul Neon) -->
     <div class="coin-section" id="institucional" style="background-color: #080a0c; border-top: 3px solid #00b8ff; padding-top: 80px;">
         <div class="container">
-            
             <div class="text-center mb-5">
                 <h1 class="fw-bold" style="font-size: 3.5rem; text-transform: uppercase;"><i class="fa-solid fa-building-columns text-info"></i> O Império Institucional</h1>
                 <p class="text-muted fs-5">Wall Street, Nasdaq e a captura do mercado pelas gestoras trilionárias.</p>
@@ -174,16 +172,14 @@
 
             <div class="row align-items-center mb-5">
                 <div class="col-lg-6 mb-4">
-                    <!-- Foto de Wall Street (Corrigida para link da Wikipedia) -->
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Charging_Bull_statue_in_Manhattan.jpg/800px-Charging_Bull_statue_in_Manhattan.jpg" alt="Touro de Wall Street" class="doc-image">
+                    <img src="https://images.pexels.com/photos/730547/pexels-photo-730547.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Touro de Wall Street" class="doc-image" style="border-color: #00b8ff;">
                 </div>
                 <div class="col-lg-6">
                     <div class="history-text">
                         <h3 class="fw-bold text-info mb-3">O Passado: A Negação</h3>
-                        <p>Durante anos, os gigantes financeiros de Wall Street chamaram as criptomoedas de "fraude" e "bolha". Enquanto o investidor de varejo construía e validava o mercado na base da volatilidade, as grandes instituições negavam publicamente qualquer interesse, mas estudavam silenciosamente a infraestrutura da blockchain nos bastidores.</p>
-                        
+                        <p>Durante anos, os gigantes financeiros de Wall Street chamaram as criptomoedas de "fraude". Enquanto o varejo construía o mercado, as instituições estudavam a blockchain nos bastidores.</p>
                         <h3 class="fw-bold text-info mb-3 mt-4">O Presente: A Invasão (Smart Money)</h3>
-                        <p>O jogo virou com a aprovação oficial dos ETFs nas bolsas como a Nasdaq. Trindades financeiras como BlackRock e Fidelity agora lideram a adoção. Ter relatórios fundamentais ao lado dos seus backtestes gráficos permite enxergar exatamente onde as baleias estão criando zonas de liquidez para as verdadeiras bull runs do mercado.</p>
+                        <p>Trindades financeiras como BlackRock e Fidelity agora lideram a adoção através de ETFs. Monitorar esses fluxos permite enxergar exatamente onde as baleias estão criando zonas de liquidez.</p>
                     </div>
                 </div>
             </div>
@@ -192,31 +188,27 @@
                 <div class="col-lg-6 mb-4">
                     <div class="history-text mt-3">
                         <h3 class="fw-bold text-info mb-3">O Futuro: Tokenização Global</h3>
-                        <p>O objetivo de Wall Street não é apenas comprar moedas, mas transformar e dominar o sistema tradicional. O foco agora é a tokenização de todos os ativos do mundo real (RWA). Ações, imóveis e títulos governamentais estão sendo programados para rodar 24/7 em blockchains institucionais, erradicando os antigos sistemas de liquidação.</p>
+                        <p>O objetivo é a tokenização de todos os ativos do mundo real (RWA). Imóveis e títulos governamentais estão sendo programados para rodar 24/7, erradicando os antigos sistemas de liquidação.</p>
                     </div>
-                    <!-- Foto Nasdaq (Corrigida para link da Wikipedia) -->
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Nasdaq_MarketSite.jpg/800px-Nasdaq_MarketSite.jpg" alt="Nasdaq Building" class="doc-image mt-4">
+                    <img src="https://images.pexels.com/photos/8370394/pexels-photo-8370394.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Painel Mercado" class="doc-image mt-4" style="border-color: #00b8ff;">
                 </div>
-                
                 <div class="col-lg-6">
-                    <!-- Caixa de Notícias do Smart Money -->
                     <div class="news-box" style="border-color: #00b8ff; height: 100%; min-height: 550px;" id="news-wallstreet">
-                        <div class="text-center mt-5 text-muted"><div class="spinner-border text-info mb-2"></div><br>Rastreando movimentações institucionais...</div>
+                        <div class="text-center mt-5 text-muted"><div class="spinner-border text-info mb-2"></div><br>Rastreando movimentações...</div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
     <footer class="text-center py-4 bg-black">
-        <p class="text-muted">© 2026 CriptoDocs. Painel Privado de Monitoramento de Mercado.</p>
+        <p class="text-muted">© 2026 CriptoDocs. Inteligência e Monitoramento de Mercado.</p>
     </footer>
 
-    <!-- SCRIPT DE AGREGADOR DE DADOS COMPLETO -->
+    <!-- SCRIPT COM A INTELIGÊNCIA DAS CORES DO GRÁFICO -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        async function buscarNoticias(termoDeBusca, tituloMoeda, elementoId) {
+        async function buscarNoticias(termoDeBusca, tituloMoeda, elementoId, corDaMoeda) {
             const container = document.getElementById(elementoId);
             const buscaRecente = termoDeBusca + " when:7d";
             const cacheBuster = new Date().getTime();
@@ -228,14 +220,14 @@
                 const data = await response.json();
 
                 if (data.status === 'ok' && data.items.length > 0) {
-                    let htmlContent = `<h5 class="text-info mb-4"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${tituloMoeda}</h5>`;
+                    let htmlContent = `<h5 class="fw-bold mb-4" style="color: ${corDaMoeda};"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${tituloMoeda}</h5>`;
                     const noticias = data.items.slice(0, 8);
                     
                     noticias.forEach(item => {
                         const dataPostagem = new Date(item.pubDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit' });
                         htmlContent += `
                             <a href="${item.link}" target="_blank" class="text-decoration-none">
-                                <div class="news-item">
+                                <div class="news-item" style="border-left-color: ${corDaMoeda};">
                                     <h6>${item.title}</h6>
                                     <small><i class="fa-regular fa-clock"></i> Atualizado em: ${dataPostagem}</small>
                                 </div>
@@ -244,23 +236,21 @@
                     });
                     container.innerHTML = htmlContent;
                 } else {
-                    container.innerHTML = `<h5 class="text-info mb-4"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${tituloMoeda}</h5><p class="text-muted">Nenhuma grande movimentação detectada.</p>`;
+                    container.innerHTML = `<h5 class="fw-bold mb-4" style="color: ${corDaMoeda};"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${tituloMoeda}</h5><p class="text-muted">Nenhuma grande movimentação detectada.</p>`;
                 }
             } catch (error) {
-                container.innerHTML = `<h5 class="text-info mb-4"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${tituloMoeda}</h5><p class="text-danger">Erro de conexão com o radar global.</p>`;
+                container.innerHTML = `<h5 class="fw-bold mb-4" style="color: ${corDaMoeda};"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${tituloMoeda}</h5><p class="text-danger">Erro de conexão.</p>`;
             }
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            // Chamadas em cascata (Todas as altcoins e Institucional integrados)
-            setTimeout(() => buscarNoticias("XRP", "XRP", "news-xrp"), 0);
-            setTimeout(() => buscarNoticias("Stellar XLM", "Stellar (XLM)", "news-xlm"), 800);
-            setTimeout(() => buscarNoticias("Flare FLR", "Flare (FLR)", "news-flr"), 1600);
-            setTimeout(() => buscarNoticias("Cardano ADA", "Cardano (ADA)", "news-ada"), 2400);
-            setTimeout(() => buscarNoticias("Shiba Inu SHIB", "Shiba Inu (SHIB)", "news-shib"), 3200);
-            
-            // O Rastreador Supremo do Smart Money com termo otimizado
-            setTimeout(() => buscarNoticias("BlackRock Bitcoin", "Rastreador de Smart Money", "news-wallstreet"), 4000);
+            // As cores aqui são EXATAMENTE as do seu gráfico de pizza!
+            setTimeout(() => buscarNoticias("XRP", "XRP", "news-xrp", "#94c020"), 0);
+            setTimeout(() => buscarNoticias("Stellar XLM", "Stellar (XLM)", "news-xlm", "#26a69a"), 800);
+            setTimeout(() => buscarNoticias("Flare FLR", "Flare (FLR)", "news-flr", "#8bc34a"), 1600);
+            setTimeout(() => buscarNoticias("Cardano ADA", "Cardano (ADA)", "news-ada", "#4dc2a6"), 2400);
+            setTimeout(() => buscarNoticias("Shiba Inu SHIB", "Shiba Inu (SHIB)", "news-shib", "#6c7a89"), 3200);
+            setTimeout(() => buscarNoticias("BlackRock Bitcoin", "Smart Money (Wall Street)", "news-wallstreet", "#00b8ff"), 4000);
         });
     </script>
 </body>
