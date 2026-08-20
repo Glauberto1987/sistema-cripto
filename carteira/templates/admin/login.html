@@ -4,7 +4,6 @@
 <!-- 1. Substitui o texto "Django administration" -->
 {% block branding %}
     <h1 id="site-name" style="color: white; font-weight: bold; padding-left: 10px;">
-        <!-- Você pode apagar o texto abaixo se quiser que não apareça NADA -->
         Acesso ao Sistema
     </h1>
 {% endblock %}
@@ -20,10 +19,10 @@
         background-repeat: no-repeat;
     }
     
-    /* 2. Deixa a caixa principal muito mais transparente (efeito vidro) */
+    /* Deixa a caixa principal muito mais transparente (efeito vidro) */
     .login #container {
-        background-color: rgba(10, 10, 10, 0.15) !important; /* Apenas 15% de opacidade escurecida */
-        backdrop-filter: blur(4px); /* Desfoque suave no fundo para leitura */
+        background-color: rgba(10, 10, 10, 0.15) !important;
+        backdrop-filter: blur(4px);
         border-radius: 16px;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
         border: 1px solid rgba(255, 255, 255, 0.2);
@@ -44,7 +43,27 @@
     .login .form-row label {
         color: #ffffff !important;
         font-weight: 500;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.8); /* Sombra para não sumir no fundo claro */
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+
+    /* Efeito neon ao passar o mouse no botão de voltar */
+    .btn-voltar:hover {
+        background-color: rgba(0, 184, 255, 0.2) !important;
+        box-shadow: 0 0 12px rgba(0, 184, 255, 0.6);
+        border-color: #00b8ff !important;
+        color: #ffffff !important;
     }
 </style>
+{% endblock %}
+
+<!-- 2. Adicionamos o bloco de conteúdo para inserir o botão abaixo do formulário -->
+{% block content %}
+    {{ block.super }}
+    
+    <!-- BOTÃO VOLTAR AO DOCUMENTÁRIO -->
+    <div style="margin-top: 25px; text-align: center;">
+        <a href="/documentario/" class="btn-voltar" style="color: #00b8ff; text-decoration: none; font-size: 14px; font-weight: bold; padding: 10px 20px; border: 1px solid rgba(0, 184, 255, 0.4); border-radius: 8px; background: rgba(0, 0, 0, 0.4); transition: all 0.3s; display: inline-block; letter-spacing: 0.5px;">
+            &larr; Voltar ao CriptoDocs
+        </a>
+    </div>
 {% endblock %}
