@@ -1,7 +1,7 @@
 {% extends "admin/login.html" %}
 {% load static %}
 
-<!-- 1. Substitui o texto "Django administration" -->
+<!-- Substitui o texto original do Django -->
 {% block branding %}
     <h1 id="site-name" style="color: white; font-weight: bold; padding-left: 10px;">
         Acesso ao Sistema
@@ -19,7 +19,7 @@
         background-repeat: no-repeat;
     }
     
-    /* Deixa a caixa principal muito mais transparente (efeito vidro) */
+    /* Efeito vidro (glassmorphism) da caixa */
     .login #container {
         background-color: rgba(10, 10, 10, 0.15) !important;
         backdrop-filter: blur(4px);
@@ -28,25 +28,23 @@
         border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
-    /* Remove o fundo escuro sólido do cabeçalho */
     #header {
         background-color: transparent !important;
     }
     
-    /* Remove os fundos brancos/cinzas padrões do Django dentro da caixa */
     .login #content, 
     .login #content-main {
         background: transparent !important;
     }
     
-    /* Força os textos "Username" e "Password" a ficarem brancos */
+    /* Textos brancos para contraste */
     .login .form-row label {
         color: #ffffff !important;
         font-weight: 500;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
     }
 
-    /* Efeito neon ao passar o mouse no botão de voltar */
+    /* Efeito neon do botão de voltar */
     .btn-voltar:hover {
         background-color: rgba(0, 184, 255, 0.2) !important;
         box-shadow: 0 0 12px rgba(0, 184, 255, 0.6);
@@ -56,11 +54,10 @@
 </style>
 {% endblock %}
 
-<!-- 2. Adicionamos o bloco de conteúdo para inserir o botão abaixo do formulário -->
+<!-- Bloco de conteúdo com apenas UM botão -->
 {% block content %}
     {{ block.super }}
     
-    <!-- BOTÃO VOLTAR AO DOCUMENTÁRIO -->
     <div style="margin-top: 25px; text-align: center;">
         <a href="/documentario/" class="btn-voltar" style="color: #00b8ff; text-decoration: none; font-size: 14px; font-weight: bold; padding: 10px 20px; border: 1px solid rgba(0, 184, 255, 0.4); border-radius: 8px; background: rgba(0, 0, 0, 0.4); transition: all 0.3s; display: inline-block; letter-spacing: 0.5px;">
             &larr; Voltar ao CriptoDocs
