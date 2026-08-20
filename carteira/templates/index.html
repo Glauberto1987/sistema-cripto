@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Financeiro | Cripto</title>
     
-    <!-- Bibliotecas externas: Chart.js para os gráficos e FontAwesome para os ícones -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Bibliotecas externas: FontAwesome para os ícones e ApexCharts para os gráficos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     
     <style>
         /* Fundo principal escuro da plataforma */
@@ -25,11 +25,12 @@
         .btn-nova-trans { background: linear-gradient(90deg, #10b981, #059669); color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); }
         .btn-nova-trans:hover { background: linear-gradient(90deg, #059669, #10b981); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.5); transform: translateY(-2px); }
         
-        /* Grid dos Cards Superiores */
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        /* Grid dos Cards Superiores - Ajustado para caber 5 cards */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
         .card { background-color: #15181e; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); border: 1px solid #2d3748; position: relative; overflow: hidden; }
         .card h3 { margin: 0 0 10px 0; font-size: 13px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
-        .card .valor { font-size: 26px; font-weight: bold; margin: 0; z-index: 2; position: relative; }
+        .card .valor { font-size: 24px; font-weight: bold; margin: 0; z-index: 2; position: relative; }
+        .card .sub-valor { font-size: 13px; margin-top: 5px; color: #94a3b8; }
         .card i.bg-icon { position: absolute; right: 15px; top: 25px; font-size: 3.5rem; color: #ffffff; opacity: 0.04; z-index: 1; transform: rotate(-10deg); }
 
         /* Containers de Gráficos e Tabelas */
@@ -50,8 +51,8 @@
         
         /* Nome e ícone da moeda na tabela */
         .moeda-info { display: flex; align-items: center; gap: 10px; }
-        .icone-moeda { width: 24px; height: 24px; border-radius: 50%; box-shadow: 0 0 5px rgba(255,255,255,0.1); }
-        .link-moeda { font-weight: bold; text-decoration: none; transition: all 0.3s; }
+        .icone-moeda { width: 28px; height: 28px; border-radius: 50%; background-color: #2d3748; padding: 2px; }
+        .link-moeda { font-weight: bold; text-decoration: none; color: #e2e8f0; transition: all 0.3s; }
         .link-moeda:hover { text-shadow: 0 0 8px currentColor; filter: brightness(1.2); }
     </style>
 </head>
@@ -65,8 +66,8 @@
         <h1>📊 Visão Geral do Portfólio</h1>
         <div class="cabecalho-botoes">
             <a href="/admin/carteira/transacao/add/" class="btn-nova-trans"><i class="fa-solid fa-plus"></i> Nova Transação</a>
-            <!-- Botão com AJAX configurado (onclick) -->
-            <a href="#" onclick="atualizarPrecosInvisivel(event)" class="btn-atualizar" id="btnAtualizar">
+            <!-- Lembre-se de configurar a URL de atualizar_precos corretamente no seu urls.py -->
+            <a href="{% url 'atualizar_precos' %}" class="btn-atualizar" id="btnAtualizar">
                 <i class="fa-solid fa-rotate"></i> Atualizar Preços
             </a>
         </div>
@@ -81,12 +82,12 @@
         </div>
         <div class="card">
             <i class="fa-solid fa-wallet bg-icon"></i>
-            <h3>Valor Atual da Carteira</h3>
+            <h3>Valor da Carteira</h3>
             <p class="valor">R$ {{ valor_atual_carteira|floatformat:2 }}</p>
         </div>
         <div class="card">
             <i class="fa-solid fa-chart-line bg-icon"></i>
-            <h3>Lucro / Prejuízo</h3>
+            <h3>Lucro Total</h3>
             <p class="valor {% if lucro_prejuizo_rs >= 0 %}positivo{% else %}negativo{% endif %}">
                 {% if lucro_prejuizo_rs >= 0 %}🟢 +{% else %}🔴 {% endif %} R$ {{ lucro_prejuizo_rs|floatformat:2 }}
             </p>
@@ -98,6 +99,18 @@
                 {% if rentabilidade >= 0 %}+{% endif %}{{ rentabilidade|floatformat:2 }}%
             </p>
         </div>
+        <!-- NOVO CARD: História de Ontem -->
+        <div class="card">
+            <i class="fa-solid fa-clock-rotate-left bg-icon"></i>
+            <h3>Desde Ontem</h3>
+            <p class="valor {% if lucro_dia_anterior > 0 %}positivo{% elif lucro_dia_anterior < 0 %}negativo{% endif %}">
+                {% if lucro_dia_anterior > 0 %}🟢 +{% elif lucro_dia_anterior < 0 %}🔴 {% else %}⚪ {% endif %}
+                R$ {{ lucro_dia_anterior|floatformat:2 }}
+            </p>
+            <p class="sub-valor">
+                {% if lucro_dia_anterior > 0 %}+{% endif %}{{ percentual_dia_anterior|floatformat:2 }}% em 24h
+            </p>
+        </div>
     </div>
 
     <!-- Sessão dos Gráficos -->
@@ -105,14 +118,16 @@
         <div class="grafico-container">
             <h2><i class="fa-solid fa-chart-pie"></i> Divisão da Carteira</h2>
             <div style="position: relative; height: 300px; width: 100%; display: flex; justify-content: center; align-items: center;">
-                <canvas id="graficoPizza"></canvas>
+                <!-- Trocado canvas por div (ApexCharts usa divs) -->
+                <div id="grafico-pizza" style="width: 100%;"></div>
             </div>
         </div>
 
         <div class="grafico-container">
             <h2><i class="fa-solid fa-arrow-trend-up"></i> Evolução Patrimonial</h2>
             <div style="position: relative; height: 300px; width: 100%;">
-                <canvas id="graficoLinha"></canvas>
+                <!-- Trocado canvas por div (ApexCharts usa divs) -->
+                <div id="grafico-linha" style="width: 100%;"></div>
             </div>
         </div>
     </div>
@@ -136,8 +151,10 @@
                 <tr>
                     <td>
                         <div class="moeda-info">
-                            <img class="icone-moeda" data-simbolo="{{ item.simbolo }}" src="" alt="{{ item.simbolo }}">
-                            <a href="{% url 'detalhe_moeda' item.id %}" class="link-moeda" data-simbolo="{{ item.simbolo }}">
+                            <!-- Ícone Automático baseado no Símbolo (Ex: BTC, ETH) via CDN -->
+                            <img class="icone-moeda" src="https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/{{ item.simbolo|lower }}.png" alt="{{ item.simbolo }}" onerror="this.style.display='none'">
+                            
+                            <a href="{% url 'detalhe_moeda' item.id %}" class="link-moeda">
                                 {{ item.nome }} ({{ item.simbolo }}) 
                             </a>
                         </div>
@@ -159,7 +176,6 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
     // --- GRÁFICO DE PIZZA (DIVISÃO DA CARTEIRA) ---
     var nomesGrafico = JSON.parse('{{ nomes_grafico|safe }}');
@@ -186,7 +202,6 @@
             enabled: false
         }
     };
-    // Atenção: Garanta que a div no seu HTML se chama id="grafico-pizza" ou ajuste aqui:
     var chartPizza = new ApexCharts(document.querySelector("#grafico-pizza"), optionsPizza);
     chartPizza.render();
 
@@ -194,7 +209,7 @@
     // --- GRÁFICO DE LINHA (EVOLUÇÃO PATRIMONIAL) ---
     var datasHistorico = JSON.parse('{{ datas_historico|safe }}');
     var valoresHistorico = JSON.parse('{{ valores_historico|safe }}');
-    var tooltipsHistorico = JSON.parse('{{ tooltips_historico|safe }}'); // Nossa etiqueta nova!
+    var tooltipsHistorico = JSON.parse('{{ tooltips_historico|safe }}');
 
     var optionsLinha = {
         series: [{
@@ -234,13 +249,12 @@
             categories: datasHistorico,
             tooltip: { enabled: false }
         },
-        // 🚨 A MÁGICA DA ETIQUETA ACONTECE AQUI 🚨
         tooltip: {
             theme: 'dark',
             y: {
                 formatter: function (val, { dataPointIndex }) {
                     let detalhe = tooltipsHistorico[dataPointIndex];
-                    if (detalhe === "Nenhuma transação") {
+                    if (detalhe === "Sem transações") {
                         return "R$ " + val;
                     }
                     return "R$ " + val + "  ➔  " + detalhe;
@@ -252,7 +266,6 @@
             strokeDashArray: 4,
         }
     };
-    // Atenção: Garanta que a div no seu HTML se chama id="grafico-linha" ou ajuste aqui:
     var chartLinha = new ApexCharts(document.querySelector("#grafico-linha"), optionsLinha);
     chartLinha.render();
 </script>

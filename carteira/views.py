@@ -10,7 +10,6 @@ import json
 
 @login_required(login_url='/admin/')
 def dashboard(request):
-
     moedas = Moeda.objects.all()
     patrimonio_investido = 0
     valor_atual_carteira = 0
@@ -111,6 +110,20 @@ def dashboard(request):
     valores_historico = json.dumps(valores_historico_list)
     tooltips_historico = json.dumps(tooltips_historico_list)
 
+    # --- NOVO: Cálculo do Desempenho do Dia Anterior ---
+    historico_recente = HistoricoPatrimonio.objects.all().order_by('-data')[:2]
+    lucro_dia_anterior = 0
+    percentual_dia_anterior = 0
+    
+    if len(historico_recente) >= 2:
+        valor_hoje = float(historico_recente[0].valor_total)
+        valor_ontem = float(historico_recente[1].valor_total)
+        
+        lucro_dia_anterior = valor_hoje - valor_ontem
+        if valor_ontem > 0:
+            percentual_dia_anterior = (lucro_dia_anterior / valor_ontem) * 100
+    # ---------------------------------------------------
+
     contexto = {
         'patrimonio_investido': float(patrimonio_investido),
         'valor_atual_carteira': float(valor_atual_carteira),
@@ -122,6 +135,8 @@ def dashboard(request):
         'datas_historico': datas_historico,
         'valores_historico': valores_historico,
         'tooltips_historico': tooltips_historico,
+        'lucro_dia_anterior': lucro_dia_anterior,
+        'percentual_dia_anterior': percentual_dia_anterior,
     }
     return render(request, 'index.html', contexto)
 
@@ -162,7 +177,6 @@ def detalhe_moeda(request, id):
 
 def atualizar_precos(request):
     try:
-        # Tenta pegar o dólar
         try:
             dolar_req = requests.get('https://economia.awesomeapi.com.br/last/USD-BRL', timeout=10).json()
             valor_dolar = float(dolar_req['USDBRL']['bid'])
@@ -170,7 +184,6 @@ def atualizar_precos(request):
             messages.error(request, f"Falha ao buscar Dólar: {str(e)}")
             return redirect('dashboard')
             
-        # Tenta pegar a Binance
         try:
             binance_req = requests.get('https://api.binance.com/api/v3/ticker/price', timeout=10).json()
             precos_binance = {item['symbol']: float(item['price']) for item in binance_req}
@@ -186,7 +199,6 @@ def atualizar_precos(request):
             try:
                 sigla = moeda.simbolo.strip().upper()
                 
-                # Ajustes das moedas
                 if sigla == 'POL': sigla = 'POL'
                 if sigla == 'MATIC': sigla = 'POL'
                 if sigla == 'BTT': sigla = 'BTTC'
