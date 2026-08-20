@@ -38,11 +38,11 @@ def dashboard(request):
             simbolo_lower = moeda.simbolo.strip().lower()
             icone_url = f"https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/{simbolo_lower}.png"
             
-            # Links diretos para moedas que não existem na biblioteca padrão
-            if simbolo_lower == 'shib': icone_url = "https://cryptologos.cc/logos/shiba-inu-shib-logo.png"
-            elif simbolo_lower == 'pol': icone_url = "https://cryptologos.cc/logos/polygon-matic-logo.png"
-            elif simbolo_lower == 'lunc': icone_url = "https://cryptologos.cc/logos/terra-classic-lunc-logo.png"
-            elif simbolo_lower == 'flr': icone_url = "https://assets.coingecko.com/coins/images/27909/large/flare.png"
+            # Links diretos (CoinMarketCap CDN - 100% à prova de bloqueios)
+            if simbolo_lower == 'shib': icone_url = "https://s2.coinmarketcap.com/static/img/coins/64x64/5994.png"
+            elif simbolo_lower == 'pol': icone_url = "https://s2.coinmarketcap.com/static/img/coins/64x64/3890.png"
+            elif simbolo_lower == 'lunc': icone_url = "https://s2.coinmarketcap.com/static/img/coins/64x64/4172.png"
+            elif simbolo_lower == 'flr': icone_url = "https://s2.coinmarketcap.com/static/img/coins/64x64/22845.png"
             # -----------------------------------------
 
             detalhes_moedas.append({
