@@ -158,13 +158,18 @@
     </footer>
 
     <!-- SCRIPT DO AGREGADOR DE NOTÍCIAS NATIVO -->
+<!-- SCRIPT DO AGREGADOR DE NOTÍCIAS NATIVO (FORÇANDO TEMPO REAL) -->
     <script>
-        // Esta função busca dados reais do Google News e converte para o seu site
-        async function buscarNoticias(moeda, elementoId) {
+        async function buscarNoticias(termoDeBusca, tituloMoeda, elementoId) {
             const container = document.getElementById(elementoId);
-            const query = encodeURIComponent(moeda + " crypto news");
-            // Usando um conversor público de RSS para JSON (gratuito e não bloqueia)
-            const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=pt-BR&gl=BR&ceid=BR:pt-419`;
+            
+            // 1. O HACK DO TEMPO: Adicionamos "when:7d" para forçar apenas notícias dos últimos 7 dias
+            const buscaRecente = termoDeBusca + " when:7d";
+            
+            // 2. O HACK DO CACHE: Um número aleatório baseado na hora exata para forçar atualização em tempo real
+            const cacheBuster = new Date().getTime();
+            
+            const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(buscaRecente)}&hl=pt-BR&gl=BR&ceid=BR:pt-419&cb=${cacheBuster}`;
             const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
 
             try {
@@ -172,13 +177,11 @@
                 const data = await response.json();
 
                 if (data.status === 'ok' && data.items.length > 0) {
-                    let htmlContent = `<h5 class="text-info mb-4"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${moeda}</h5>`;
+                    let htmlContent = `<h5 class="text-info mb-4"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${tituloMoeda}</h5>`;
                     
-                    // Pega as 8 notícias mais recentes (que saíram hoje ou ontem)
                     const noticias = data.items.slice(0, 8);
                     
                     noticias.forEach(item => {
-                        // Formata a data
                         const dataPostagem = new Date(item.pubDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute:'2-digit' });
                         
                         htmlContent += `
@@ -192,20 +195,20 @@
                     });
                     container.innerHTML = htmlContent;
                 } else {
-                    container.innerHTML = `<h5 class="text-info mb-4"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${moeda}</h5><p class="text-muted">Mercado calmo hoje. Nenhuma bomba nas últimas horas.</p>`;
+                    container.innerHTML = `<h5 class="text-info mb-4"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${tituloMoeda}</h5><p class="text-muted">Nenhuma grande movimentação nas últimas horas.</p>`;
                 }
             } catch (error) {
-                container.innerHTML = `<h5 class="text-info mb-4"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${moeda}</h5><p class="text-danger">Erro de conexão com o radar global.</p>`;
+                container.innerHTML = `<h5 class="text-info mb-4"><i class="fa-solid fa-bolt"></i> Cobertura Ao Vivo: ${tituloMoeda}</h5><p class="text-danger">Erro de conexão com o radar global.</p>`;
             }
         }
 
-        // Chama a função para ativar o radar de cada moeda assim que o site abre
         document.addEventListener("DOMContentLoaded", () => {
-            buscarNoticias("XRP", "news-xrp");
-            buscarNoticias("Stellar XLM", "news-xlm");
-            buscarNoticias("Flare FLR", "news-flr");
-            buscarNoticias("Cardano ADA", "news-ada");
-            buscarNoticias("Shiba Inu SHIB", "news-shib");
+            // Chamadas em cascata (com termos mais precisos)
+            setTimeout(() => buscarNoticias("XRP", "XRP", "news-xrp"), 0);
+            setTimeout(() => buscarNoticias("Stellar XLM", "Stellar (XLM)", "news-xlm"), 800);
+            setTimeout(() => buscarNoticias("Flare FLR", "Flare (FLR)", "news-flr"), 1600);
+            setTimeout(() => buscarNoticias("Cardano ADA", "Cardano (ADA)", "news-ada"), 2400);
+            setTimeout(() => buscarNoticias("Shiba Inu SHIB", "Shiba Inu (SHIB)", "news-shib"), 3200);
         });
     </script>
 </body>
