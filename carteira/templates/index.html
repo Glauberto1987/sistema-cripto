@@ -173,24 +173,26 @@
 </div>
 
 <script>
-    var nomesGrafico = JSON.parse('{{ nomes_grafico|safe }}');
-    var valoresGrafico = JSON.parse('{{ valores_grafico|safe }}');
+    // 1. O jeito correto e seguro de passar variáveis do Django para o JavaScript (sem aspas)
+    var nomesGrafico = {{ nomes_grafico|safe }};
+    var valoresGrafico = {{ valores_grafico|safe }};
 
     var optionsPizza = {
         series: valoresGrafico,
         labels: nomesGrafico,
         chart: { type: 'donut', height: 320, foreColor: '#fff', background: 'transparent' },
         theme: { mode: 'dark' },
-        stroke: { show: true, colors: '#1f2937', width: 2 },
+        // 2. O GRANDE VILÃO ESTAVA AQUI: O ApexCharts exige colchetes na cor do stroke!
+        stroke: { show: true, colors: ['#1f2937'], width: 2 },
         dataLabels: { enabled: false }
     };
     var chartPizza = new ApexCharts(document.querySelector("#grafico-pizza"), optionsPizza);
     chartPizza.render();
 
 
-    var datasHistorico = JSON.parse('{{ datas_historico|safe }}');
-    var valoresHistorico = JSON.parse('{{ valores_historico|safe }}');
-    var tooltipsHistorico = JSON.parse('{{ tooltips_historico|safe }}');
+    var datasHistorico = {{ datas_historico|safe }};
+    var valoresHistorico = {{ valores_historico|safe }};
+    var tooltipsHistorico = {{ tooltips_historico|safe }};
 
     var optionsLinha = {
         series: [{ name: 'Patrimônio', data: valoresHistorico }],
