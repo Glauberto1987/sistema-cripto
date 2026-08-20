@@ -49,11 +49,34 @@
                     <li class="nav-item"><a class="nav-link" href="#institucional">Smart Money</a></li>
                 </ul>
                 <div class="ms-auto mt-2 mt-lg-0">
-                    <a href="/admin/login/" class="btn-login"><i class="fa-solid fa-chart-pie"></i> Meu Painel de Controle</a>
+                    <a href="/" class="btn-login"><i class="fa-solid fa-chart-pie"></i> Meu Painel de Controle</a>
                 </div>
             </div>
         </div>
     </nav>
+
+    <!-- TICKER TAPE (MERCADO MACRO: BTC, NASD, OURO, PETRÓLEO, XRP) -->
+    <div style="padding-top: 74px; background-color: #000000; border-bottom: 1px solid #00b8ff;">
+        <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+            {
+            "symbols": [
+                { "proName": "BITSTAMP:BTCUSD", "title": "Bitcoin (BTC)" },
+                { "proName": "NASDAQ:NDX", "title": "Nasdaq 100" },
+                { "proName": "OANDA:XAUUSD", "title": "Ouro (XAU)" },
+                { "proName": "TVC:USOIL", "title": "Petróleo WTI" },
+                { "proName": "BINANCE:XRPUSDT", "title": "XRP" }
+            ],
+            "showSymbolLogo": true,
+            "colorTheme": "dark",
+            "isTransparent": true,
+            "displayMode": "adaptive",
+            "locale": "br"
+            }
+            </script>
+        </div>
+    </div>
 
     <div class="hero">
         <div class="container">
@@ -244,7 +267,6 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            // As cores aqui são EXATAMENTE as do seu gráfico de pizza!
             setTimeout(() => buscarNoticias("XRP", "XRP", "news-xrp", "#94c020"), 0);
             setTimeout(() => buscarNoticias("Stellar XLM", "Stellar (XLM)", "news-xlm", "#26a69a"), 800);
             setTimeout(() => buscarNoticias("Flare FLR", "Flare (FLR)", "news-flr", "#8bc34a"), 1600);
