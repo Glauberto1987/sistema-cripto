@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CriptoDocs | O Futuro do Dinheiro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #050505;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            overflow-x: hidden;
+        }
+        /* Navbar Transparente */
+        .navbar {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            position: absolute;
+            width: 100%;
+            z-index: 100;
+        }
+        .btn-login {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        .btn-login:hover {
+            background: #00b8ff;
+            color: white;
+            border-color: #00b8ff;
+            box-shadow: 0 0 15px #00b8ff;
+        }
+        /* Hero Section (Capa do Documentário) */
+        .hero {
+            height: 80vh;
+            background: linear-gradient(to top, #050505, transparent), url('https://images.unsplash.com/photo-1639762681485-074b7f4ec651?q=80&w=2000&auto=format&fit=crop') center/cover;
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 50px;
+        }
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+        }
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            max-width: 600px;
+        }
+        /* Seções das Moedas */
+        .coin-section {
+            padding: 80px 0;
+            border-bottom: 1px solid #1f2937;
+        }
+        .coin-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .coin-logo { width: 50px; height: 50px; border-radius: 50%; }
+        .history-text { font-size: 1.1rem; line-height: 1.8; color: #cbd5e1; }
+        
+        /* Widget de Notícias */
+        .news-container {
+            background: #0b0d10;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+            height: 500px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navegação e Botão de Login -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand text-white fw-bold" href="#"><i class="fa-solid fa-film text-info"></i> CriptoDocs</a>
+            <div class="ms-auto">
+                <!-- AQUI ESTÁ O REDIRECIONAMENTO PARA A SUA TELA DE LOGIN -->
+                <a href="/admin/login/" class="btn-login"><i class="fa-solid fa-lock"></i> Acessar Painel</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Capa Principal -->
+    <div class="hero">
+        <div class="container">
+            <h1 class="hero-title">A Nova <span class="text-info">Economia</span></h1>
+            <p class="hero-subtitle">O passado, presente e futuro das tecnologias que estão reescrevendo o sistema financeiro global. Atualizações em tempo real.</p>
+        </div>
+    </div>
+
+    <!-- SEÇÃO XRP -->
+    <div class="coin-section" id="xrp">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <h2 class="coin-title">
+                        <img src="https://cryptologos.cc/logos/xrp-xrp-logo.png" class="coin-logo"> XRP
+                    </h2>
+                    <div class="history-text">
+                        <p><strong>O Passado:</strong> Criada em 2012 por Chris Larsen e Jed McCaleb, a XRP nasceu com um propósito claro: ser a ponte para transferências internacionais rápidas e baratas, competindo diretamente com o sistema SWIFT.</p>
+                        <p><strong>O Conflito:</strong> Enfrentou a batalha legal mais famosa do mundo cripto contra a SEC (EUA), definindo o futuro regulatório de todo o mercado.</p>
+                        <p><strong>O Futuro:</strong> Com parcerias bancárias globais em andamento, a XRP se posiciona como a principal infraestrutura para CBDCs (Moedas Digitais de Bancos Centrais) e liquidação institucional.</p>
+                    </div>
+                </div>
+                <!-- Notícias XRP em Tempo Real (TradingView Widget) -->
+                <div class="col-lg-6">
+                    <div class="news-container">
+                        <h5 class="text-info"><i class="fa-solid fa-satellite-dish"></i> Radar Ao Vivo: XRP</h5>
+                        <!-- TradingView Widget BEGIN -->
+                        <div class="tradingview-widget-container">
+                            <div class="tradingview-widget-container__widget"></div>
+                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+                            {
+                                "feedMode": "symbol",
+                                "symbol": "BINANCE:XRPUSDT",
+                                "colorTheme": "dark",
+                                "isTransparent": true,
+                                "displayMode": "regular",
+                                "width": "100%",
+                                "height": "400",
+                                "locale": "br"
+                            }
+                            </script>
+                        </div>
+                        <!-- TradingView Widget END -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEÇÃO XLM -->
+    <div class="coin-section bg-dark" id="xlm">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-4 order-lg-2">
+                    <h2 class="coin-title">
+                        <img src="https://cryptologos.cc/logos/stellar-xlm-logo.png" class="coin-logo"> Stellar (XLM)
+                    </h2>
+                    <div class="history-text">
+                        <p><strong>O Passado:</strong> Fundada em 2014, também por Jed McCaleb (co-fundador da Ripple). Enquanto a XRP focou em bancos, a Stellar focou em "bancarizar os desbancarizados", focando no usuário comum e transferências P2P.</p>
+                        <p><strong>O Presente:</strong> Integrações gigantescas com a MoneyGram e USDC transformaram a Stellar em uma via de mão dupla entre dinheiro físico e criptomoedas.</p>
+                        <p><strong>O Futuro:</strong> Implementação de Contratos Inteligentes (Soroban) coloca a rede em um novo patamar no mundo DeFi.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 order-lg-1">
+                    <div class="news-container">
+                        <h5 class="text-info"><i class="fa-solid fa-satellite-dish"></i> Radar Ao Vivo: XLM</h5>
+                        <div class="tradingview-widget-container">
+                            <div class="tradingview-widget-container__widget"></div>
+                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+                            { "feedMode": "symbol", "symbol": "BINANCE:XLMUSDT", "colorTheme": "dark", "isTransparent": true, "displayMode": "regular", "width": "100%", "height": "400", "locale": "br" }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REPETINDO O PADRÃO PARA FLARE, ADA E SHIBA -->
+    
+    <!-- SEÇÃO FLARE -->
+    <div class="coin-section" id="flare">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <h2 class="coin-title">
+                        <img src="https://cryptologos.cc/logos/flare-flr-logo.png" class="coin-logo"> Flare (FLR)
+                    </h2>
+                    <div class="history-text">
+                        <p><strong>A Origem:</strong> Inicialmente pensada para trazer contratos inteligentes para a rede XRP. Evoluiu para algo muito maior: "O Blockchain dos Dados".</p>
+                        <p><strong>O Futuro:</strong> A Flare promete conectar tudo com tudo de forma descentralizada. Seus oráculos integrados buscam fornecer dados do mundo real para aplicativos Web3 com segurança máxima.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="news-container">
+                        <h5 class="text-info"><i class="fa-solid fa-satellite-dish"></i> Radar Ao Vivo: FLR</h5>
+                        <div class="tradingview-widget-container">
+                            <div class="tradingview-widget-container__widget"></div>
+                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+                            { "feedMode": "symbol", "symbol": "OKX:FLRUSDT", "colorTheme": "dark", "isTransparent": true, "displayMode": "regular", "width": "100%", "height": "400", "locale": "br" }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEÇÃO ADA E SHIBA... (Estrutura idêntica) -->
+    
+    <footer class="text-center py-4 bg-black">
+        <p class="text-muted">© 2024 CriptoDocs. Desenvolvido para visão estratégica de mercado.</p>
+    </footer>
+
+</body>
+</html>

@@ -250,3 +250,6 @@ def atualizar_precos(request):
         messages.error(request, f"Erro Crítico Geral: {str(e)}")
         
     return redirect('dashboard')
+
+def documentario(request):
+    return render(request, 'documentario.html')
