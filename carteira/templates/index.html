@@ -150,8 +150,7 @@
                 <tr>
                     <td>
                         <div class="moeda-info">
-<img class="icone-moeda" src="https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/{{ item.simbolo|lower }}.png" alt="{{ item.simbolo }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ item.simbolo }}&background=2d3748&color=fff&rounded=true&bold=true&font-size=0.4';">                            
-                            <a href="{% url 'detalhe_moeda' item.id %}" class="link-moeda">
+                            <img class="icone-moeda" src="{{ item.icone }}" alt="{{ item.simbolo }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ item.simbolo }}&background=2d3748&color=fff&rounded=true&bold=true&font-size=0.4';">                            <a href="{% url 'detalhe_moeda' item.id %}" class="link-moeda">
                                 {{ item.nome }} ({{ item.simbolo }}) 
                             </a>
                         </div>

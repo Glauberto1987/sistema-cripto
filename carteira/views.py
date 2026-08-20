@@ -34,6 +34,17 @@ def dashboard(request):
             lucro_moeda = valor_atual_moeda - gasto_float
             rentabilidade_moeda = (lucro_moeda / gasto_float) * 100 if gasto_float > 0 else 0
             
+            # --- INÍCIO DA CONFIGURAÇÃO DOS ÍCONES ---
+            simbolo_lower = moeda.simbolo.strip().lower()
+            icone_url = f"https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/128/color/{simbolo_lower}.png"
+            
+            # Links diretos para moedas que não existem na biblioteca padrão
+            if simbolo_lower == 'shib': icone_url = "https://cryptologos.cc/logos/shiba-inu-shib-logo.png"
+            elif simbolo_lower == 'pol': icone_url = "https://cryptologos.cc/logos/polygon-matic-logo.png"
+            elif simbolo_lower == 'lunc': icone_url = "https://cryptologos.cc/logos/terra-classic-lunc-logo.png"
+            elif simbolo_lower == 'flr': icone_url = "https://s2.coinmarketcap.com/static/img/coins/64x64/4172.png"
+            # -----------------------------------------
+
             detalhes_moedas.append({
                 'id': moeda.id,
                 'nome': moeda.nome,
@@ -43,7 +54,8 @@ def dashboard(request):
                 'preco_atual': preco_float,
                 'valor_atual': float(valor_atual_moeda),
                 'lucro': float(lucro_moeda),
-                'rentabilidade': float(rentabilidade_moeda)
+                'rentabilidade': float(rentabilidade_moeda),
+                'icone': icone_url  # Enviando a URL do ícone para o HTML
             })
             
     lucro_prejuizo_rs = float(valor_atual_carteira) - float(patrimonio_investido)
@@ -215,7 +227,7 @@ def atualizar_precos(request):
                 # Ajustes de símbolos
                 if sigla == 'POL': sigla = 'POL'
                 if sigla == 'MATIC': sigla = 'POL'
-                #if sigla == 'BTT': sigla = 'BTTC'
+                # if sigla == 'BTT': sigla = 'BTTC' # COMENTADO PARA A MEXC ACEITAR BTT NORMAL
                 if sigla == 'LUNC': sigla = 'LUNC' 
                 
                 par = f"{sigla}USDT"
