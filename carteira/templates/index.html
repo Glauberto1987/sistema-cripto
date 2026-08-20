@@ -16,7 +16,7 @@
         .cabecalho-botoes { display: flex; gap: 15px; align-items: center; }
         h1 { margin: 0; color: #e2e8f0; font-size: 24px; }
         
-        /* CSS do NOVO Botão do CriptoDocs */
+        /* CSS do Botão do CriptoDocs */
         .btn-docs { background: linear-gradient(90deg, #8b5cf6, #6d28d9); color: white; padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.3s; border: none; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2); cursor: pointer; }
         .btn-docs:hover { background: linear-gradient(90deg, #6d28d9, #8b5cf6); box-shadow: 0 4px 20px rgba(139, 92, 246, 0.5); transform: translateY(-2px); color: white; }
 
@@ -62,7 +62,6 @@
         <h1>📊 Visão Geral do Portfólio</h1>
         <div class="cabecalho-botoes">
             
-            <!-- O NOVO BOTÃO DA INTELIGÊNCIA DE MERCADO (CRIPTODOCS) AQUI -->
             <a href="/documentario/" class="btn-docs"><i class="fa-solid fa-film"></i> CriptoDocs</a>
 
             <a href="/admin/carteira/transacao/add/" class="btn-nova-trans"><i class="fa-solid fa-plus"></i> Nova Transação</a>
@@ -72,7 +71,6 @@
         </div>
     </div>
 
-    <!-- MENSAGENS DE ERRO OU SUCESSO -->
     {% if messages %}
         <div style="margin-bottom: 20px;">
             {% for message in messages %}
@@ -158,7 +156,8 @@
                 <tr>
                     <td>
                         <div class="moeda-info">
-                            <img class="icone-moeda" src="{{ item.icone }}" alt="{{ item.simbolo }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ item.simbolo }}&background=2d3748&color=fff&rounded=true&bold=true&font-size=0.4';">                            <a href="{% url 'detalhe_moeda' item.id %}" class="link-moeda">
+                            <img class="icone-moeda" src="{{ item.icone }}" alt="{{ item.simbolo }}" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ item.simbolo }}&background=2d3748&color=fff&rounded=true&bold=true&font-size=0.4';">
+                            <a href="{% url 'detalhe_moeda' item.id %}" class="link-moeda">
                                 {{ item.nome }} ({{ item.simbolo }}) 
                             </a>
                         </div>
@@ -180,22 +179,49 @@
     </div>
 </div>
 
+<!-- SCRIPT COM O CÉREBRO DE CORES DO GRÁFICO -->
 <script>
     var nomesGrafico = {{ nomes_grafico|safe }};
     var valoresGrafico = {{ valores_grafico|safe }};
 
+    // O CÉREBRO DAS CORES INSTITUCIONAIS
+    var paletaCores = {
+        'XRP': '#94c020',   // Verde Oliva
+        'XLM': '#26a69a',   // Verde Água (Teal)
+        'FLR': '#8bc34a',   // Verde Claro
+        'ADA': '#4dc2a6',   // Verde Piscina
+        'SHIB': '#6c7a89',  // Cinza Azulado
+        'POL': '#8b5cf6',   // Roxo (Polygon)
+        'LUNC': '#f43f5e',  // Vermelho
+        'BTT': '#00b8ff',   // Azul Neon
+        'BTC': '#f59e0b',   // Laranja Bitcoin
+        'ETH': '#3b82f6'    // Azul Ethereum
+    };
+
+    // Mapeia a cor para cada fatia. Se for uma moeda nova não listada, pinta de azul neon
+    var coresDoGrafico = nomesGrafico.map(function(moeda) {
+        return paletaCores[moeda] || '#00b8ff'; 
+    });
+
+    // GRÁFICO DE PIZZA
     var optionsPizza = {
         series: valoresGrafico,
         labels: nomesGrafico,
+        colors: coresDoGrafico, // <-- Inteligência de cores aplicada aqui!
         chart: { type: 'donut', height: 320, foreColor: '#fff', background: 'transparent' },
         theme: { mode: 'dark' },
         stroke: { show: true, colors: ['#1f2937'], width: 2 },
-        dataLabels: { enabled: false }
+        dataLabels: { enabled: false },
+        legend: {
+            position: 'right',
+            offsetY: 20
+        }
     };
     var chartPizza = new ApexCharts(document.querySelector("#grafico-pizza"), optionsPizza);
     chartPizza.render();
 
 
+    // GRÁFICO DE LINHA (EVOLUÇÃO)
     var datasHistorico = {{ datas_historico|safe }};
     var valoresHistorico = {{ valores_historico|safe }};
     var tooltipsHistorico = {{ tooltips_historico|safe }};
@@ -203,7 +229,7 @@
     var optionsLinha = {
         series: [{ name: 'Patrimônio', data: valoresHistorico }],
         chart: { type: 'area', height: 320, foreColor: '#9ca3af', toolbar: { show: false }, background: 'transparent' },
-        colors: ['#00bfff'],
+        colors: ['#00b8ff'], // Azul Neon
         fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.5, opacityTo: 0.05, stops: [0, 100] } },
         dataLabels: { enabled: false },
         stroke: { curve: 'smooth', width: 3 },
