@@ -20,7 +20,7 @@ def dashboard(request):
         qtd_comprada = compras.aggregate(Sum('quantidade'))['quantidade__sum'] or 0
         total_gasto = compras.aggregate(Sum('valor_total'))['valor_total__sum'] or 0
         
-        # Convertendo tudo para float para impedir conflitos de tipos na matematica
+        # Convertendo tudo para float para impedir conflitos de tipos
         qtd_float = float(qtd_comprada)
         preco_float = float(moeda.preco_atual)
         gasto_float = float(total_gasto)
@@ -110,7 +110,7 @@ def dashboard(request):
     valores_historico = json.dumps(valores_historico_list)
     tooltips_historico = json.dumps(tooltips_historico_list)
 
-    # --- NOVO: Cálculo do Desempenho do Dia Anterior ---
+    # Cálculo do Desempenho do Dia Anterior
     historico_recente = HistoricoPatrimonio.objects.all().order_by('-data')[:2]
     lucro_dia_anterior = 0
     percentual_dia_anterior = 0
@@ -122,7 +122,6 @@ def dashboard(request):
         lucro_dia_anterior = valor_hoje - valor_ontem
         if valor_ontem > 0:
             percentual_dia_anterior = (lucro_dia_anterior / valor_ontem) * 100
-    # ---------------------------------------------------
 
     contexto = {
         'patrimonio_investido': float(patrimonio_investido),
@@ -181,6 +180,7 @@ def atualizar_precos(request):
             dolar_req = requests.get('https://economia.awesomeapi.com.br/last/USD-BRL', timeout=10).json()
             valor_dolar = float(dolar_req['USDBRL']['bid'])
         except Exception as e:
+            print(f"🔴 ERRO AO BUSCAR DÓLAR: {str(e)}")
             messages.error(request, f"Falha ao buscar Dólar: {str(e)}")
             return redirect('dashboard')
             
@@ -188,6 +188,7 @@ def atualizar_precos(request):
             binance_req = requests.get('https://api.binance.com/api/v3/ticker/price', timeout=10).json()
             precos_binance = {item['symbol']: float(item['price']) for item in binance_req}
         except Exception as e:
+            print(f"🔴 ERRO NA BINANCE: {str(e)}")
             messages.error(request, f"Falha ao buscar Binance: {str(e)}")
             return redirect('dashboard')
             
@@ -213,6 +214,7 @@ def atualizar_precos(request):
                 else:
                     moedas_com_erro.append(sigla)
             except Exception as e:
+                print(f"🔴 ERRO AO SALVAR MOEDA {moeda.simbolo}: {str(e)}")
                 messages.error(request, f"Erro ao salvar moeda {moeda.simbolo}: {str(e)}")
 
         if moedas_atualizadas > 0:
@@ -221,6 +223,7 @@ def atualizar_precos(request):
             messages.warning(request, f"Moedas não encontradas na Binance: {', '.join(moedas_com_erro)}")
             
     except Exception as e:
+        print(f"🔴 ERRO CRÍTICO GERAL: {str(e)}")
         messages.error(request, f"Erro Crítico Geral: {str(e)}")
         
     return redirect('dashboard')
