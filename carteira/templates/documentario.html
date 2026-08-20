@@ -1,24 +1,162 @@
-<!-- SEÇÃO XRP -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CriptoDocs | O Futuro do Dinheiro</title>
+    <!-- CSS Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #050505;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            overflow-x: hidden;
+        }
+        .navbar {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            position: absolute;
+            width: 100%;
+            z-index: 100;
+        }
+        .btn-login {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        .btn-login:hover { background: #00b8ff; color: white; border-color: #00b8ff; box-shadow: 0 0 15px #00b8ff; }
+        .hero {
+            height: 70vh;
+            background: linear-gradient(to top, #050505, transparent), url('https://images.unsplash.com/photo-1639762681485-074b7f4ec651?q=80&w=2000&auto=format&fit=crop') center/cover;
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 50px;
+        }
+        .hero-title { font-size: 4rem; font-weight: 900; text-transform: uppercase; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
+        .coin-section { padding: 60px 0; border-bottom: 1px solid #1f2937; }
+        .coin-title { font-size: 2.5rem; font-weight: bold; display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .coin-logo { width: 50px; height: 50px; border-radius: 50%; }
+        .history-text p { font-size: 1.1rem; line-height: 1.7; color: #cbd5e1; }
+        .news-container { background: #0b0d10; border: 1px solid #1f2937; border-radius: 12px; padding: 15px; height: 400px; overflow: hidden; }
+        
+        /* Estilos da Aba do X (Twitter) */
+        .twitter-section { padding: 60px 0; background-color: #0a0a0a; border-bottom: 1px solid #1f2937; }
+        .nav-tabs .nav-link { color: #94a3b8; font-weight: bold; border: none; padding: 15px 30px; font-size: 1.2rem; }
+        .nav-tabs .nav-link.active { background-color: transparent; border-bottom: 3px solid #1da1f2; color: #1da1f2; }
+        .nav-tabs .nav-link:hover { color: #1da1f2; }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand text-white fw-bold" href="#"><i class="fa-solid fa-film text-info"></i> CriptoDocs</a>
+            <div class="ms-auto">
+                <a href="/admin/login/" class="btn-login"><i class="fa-solid fa-lock"></i> Acessar Painel</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="container">
+            <h1 class="hero-title">A Nova <span class="text-info">Economia</span></h1>
+            <p class="fs-5 color-gray max-w-600">O passado, presente e futuro do sistema financeiro. Documentado e atualizado ao vivo.</p>
+        </div>
+    </div>
+
+    <!-- CENTRAL DO X (TWITTER) - A NOVA ABA ESPECÍFICA -->
+    <div class="twitter-section" id="radar-x">
+        <div class="container">
+            <h2 class="fw-bold mb-4"><i class="fa-brands fa-x-twitter" style="color: #fff;"></i> Central X Ao Vivo</h2>
+            <p class="text-muted mb-4">Acompanhe as postagens oficiais e as principais notícias na rede que move o mercado.</p>
+            
+            <!-- Abas (Tabs) -->
+            <ul class="nav nav-tabs justify-content-center mb-4" id="twitterTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-xrp">XRP</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-xlm">XLM</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-flr">FLR</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-ada">ADA</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-shib">SHIB</button>
+                </li>
+            </ul>
+
+            <!-- Conteúdo das Abas (Timelines) -->
+            <div class="tab-content bg-black rounded p-3" id="twitterTabsContent" style="border: 1px solid #1f2937;">
+                
+                <!-- XRP X -->
+                <div class="tab-pane fade show active" id="tab-xrp">
+                    <div class="d-flex justify-content-center">
+                        <a class="twitter-timeline" data-theme="dark" data-height="500" data-width="800" href="https://twitter.com/Ripple?ref_src=twsrc%5Etfw">Atualizações da Ripple (XRP)</a>
+                    </div>
+                </div>
+                <!-- XLM X -->
+                <div class="tab-pane fade" id="tab-xlm">
+                    <div class="d-flex justify-content-center">
+                        <a class="twitter-timeline" data-theme="dark" data-height="500" data-width="800" href="https://twitter.com/StellarOrg?ref_src=twsrc%5Etfw">Atualizações da Stellar (XLM)</a>
+                    </div>
+                </div>
+                <!-- FLR X -->
+                <div class="tab-pane fade" id="tab-flr">
+                    <div class="d-flex justify-content-center">
+                        <a class="twitter-timeline" data-theme="dark" data-height="500" data-width="800" href="https://twitter.com/FlareNetworks?ref_src=twsrc%5Etfw">Atualizações da Flare (FLR)</a>
+                    </div>
+                </div>
+                <!-- ADA X -->
+                <div class="tab-pane fade" id="tab-ada">
+                    <div class="d-flex justify-content-center">
+                        <a class="twitter-timeline" data-theme="dark" data-height="500" data-width="800" href="https://twitter.com/Cardano?ref_src=twsrc%5Etfw">Atualizações da Cardano (ADA)</a>
+                    </div>
+                </div>
+                <!-- SHIB X -->
+                <div class="tab-pane fade" id="tab-shib">
+                    <div class="d-flex justify-content-center">
+                        <a class="twitter-timeline" data-theme="dark" data-height="500" data-width="800" href="https://twitter.com/Shibtoken?ref_src=twsrc%5Etfw">Atualizações da Shiba Inu (SHIB)</a>
+                    </div>
+                </div>
+
+                <!-- Script Oficial do X (Carrega os feeds) -->
+                <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEÇÃO XRP -->
     <div class="coin-section" id="xrp">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 mb-4">
-                    <h2 class="coin-title">
-                        <img src="https://cryptologos.cc/logos/xrp-xrp-logo.png" class="coin-logo"> XRP
-                    </h2>
+                    <h2 class="coin-title"><img src="https://cryptologos.cc/logos/xrp-xrp-logo.png" class="coin-logo"> XRP</h2>
                     <div class="history-text">
-                        <p><strong>O Passado:</strong> Criada em 2012, a XRP nasceu para ser a ponte ultra-rápida e barata para pagamentos internacionais. Enfrentou e sobreviveu à maior batalha regulatória da história cripto contra a SEC.</p>
-                        <p><strong>O Presente:</strong> Com a clareza jurídica consolidada e o lançamento da própria stablecoin da Ripple (a RLUSD), a XRP Ledger se expandiu maciçamente para o universo DeFi institucional, conectando o dinheiro tradicional às finanças descentralizadas.</p>
-                        <p><strong>O Futuro:</strong> A Ripple foca agora na tokenização de ativos do mundo real (RWA) — como imóveis e títulos públicos — transformando a XRP na principal via expressa de liquidação global ininterrupta (24/7) para grandes bancos e governos.</p>
+                        <p><strong>O Passado:</strong> Criada em 2012, a XRP nasceu para ser a ponte ultra-rápida para pagamentos internacionais, sobrevivendo à maior batalha da SEC.</p>
+                        <p><strong>O Presente:</strong> Expansão maciça para o universo DeFi institucional, conectando o dinheiro tradicional às finanças descentralizadas.</p>
+                        <p><strong>O Futuro:</strong> A Ripple foca agora na tokenização de ativos do mundo real (RWA), sendo a via expressa de grandes governos.</p>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="news-container">
-                        <h5 class="text-info"><i class="fa-solid fa-satellite-dish"></i> Radar Ao Vivo: XRP</h5>
+                        <h5 class="text-info"><i class="fa-solid fa-chart-line"></i> Mercado Global: XRP</h5>
                         <div class="tradingview-widget-container">
                             <div class="tradingview-widget-container__widget"></div>
                             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-                            { "feedMode": "symbol", "symbol": "CRYPTO:XRPUSD", "colorTheme": "dark", "isTransparent": true, "displayMode": "regular", "width": "100%", "height": "400", "locale": "br" }
+                            { "feedMode": "symbol", "symbol": "CRYPTO:XRPUSD", "colorTheme": "dark", "isTransparent": true, "displayMode": "regular", "width": "100%", "height": "350", "locale": "br" }
                             </script>
                         </div>
                     </div>
@@ -32,22 +170,20 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 mb-4 order-lg-2">
-                    <h2 class="coin-title">
-                        <img src="https://cryptologos.cc/logos/stellar-xlm-logo.png" class="coin-logo"> Stellar (XLM)
-                    </h2>
+                    <h2 class="coin-title"><img src="https://cryptologos.cc/logos/stellar-xlm-logo.png" class="coin-logo"> Stellar (XLM)</h2>
                     <div class="history-text">
-                        <p><strong>O Passado:</strong> Focada inicialmente em "bancarizar os desbancarizados" via transferências P2P de baixo custo e sólidas integrações (como a parceria com a MoneyGram).</p>
-                        <p><strong>O Presente:</strong> O ecossistema explodiu. Com a maturação da plataforma de contratos inteligentes "Soroban", a rede Stellar deixou de ser apenas uma via de pagamento para se tornar um ambiente DeFi completo, ágil e altamente eficiente para emissão de stablecoins.</p>
-                        <p><strong>O Futuro:</strong> Liderar o processo global de emissão de CBDCs (Moedas de Bancos Centrais) de países emergentes e micro-pagamentos invisíveis (Internet das Coisas), utilizando a XLM como combustível antispam universal.</p>
+                        <p><strong>O Passado:</strong> Focada inicialmente em "bancarizar os desbancarizados" via transferências P2P de baixo custo.</p>
+                        <p><strong>O Presente:</strong> A plataforma Soroban atingiu maturidade, tornando a Stellar um ambiente DeFi completo para stablecoins.</p>
+                        <p><strong>O Futuro:</strong> Liderar a emissão de CBDCs em países emergentes e micro-pagamentos na Internet das Coisas.</p>
                     </div>
                 </div>
                 <div class="col-lg-6 order-lg-1">
                     <div class="news-container">
-                        <h5 class="text-info"><i class="fa-solid fa-satellite-dish"></i> Radar Ao Vivo: XLM</h5>
+                        <h5 class="text-info"><i class="fa-solid fa-chart-line"></i> Mercado Global: XLM</h5>
                         <div class="tradingview-widget-container">
                             <div class="tradingview-widget-container__widget"></div>
                             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-                            { "feedMode": "symbol", "symbol": "CRYPTO:XLMUSD", "colorTheme": "dark", "isTransparent": true, "displayMode": "regular", "width": "100%", "height": "400", "locale": "br" }
+                            { "feedMode": "symbol", "symbol": "CRYPTO:XLMUSD", "colorTheme": "dark", "isTransparent": true, "displayMode": "regular", "width": "100%", "height": "350", "locale": "br" }
                             </script>
                         </div>
                     </div>
@@ -61,22 +197,20 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 mb-4">
-                    <h2 class="coin-title">
-                        <img src="https://cryptologos.cc/logos/flare-flr-logo.png" class="coin-logo"> Flare (FLR)
-                    </h2>
+                    <h2 class="coin-title"><img src="https://cryptologos.cc/logos/flare-flr-logo.png" class="coin-logo"> Flare (FLR)</h2>
                     <div class="history-text">
-                        <p><strong>O Passado:</strong> Criada inicialmente com a promessa de levar contratos inteligentes apenas à rede XRP, o projeto precisou evoluir sua visão durante os atrasos dos airdrops.</p>
-                        <p><strong>O Presente:</strong> Hoje é conhecida como "O Blockchain dos Dados". Os protocolos FTSO (Flare Time Series Oracle) e State Connector atingiram maturidade, permitindo que a Flare extraia dados do mundo real e de outras blockchains de forma altamente segura e descentralizada.</p>
-                        <p><strong>O Futuro:</strong> A revolução dos "FAssets". O objetivo da Flare é permitir que criptomoedas que não possuem contratos inteligentes (como Bitcoin e Dogecoin) ganhem rendimento dentro da Web3, criando uma verdadeira interoperabilidade sem pontes centralizadas.</p>
+                        <p><strong>O Passado:</strong> Promessa inicial de levar contratos inteligentes à rede XRP.</p>
+                        <p><strong>O Presente:</strong> "O Blockchain dos Dados". Seus oráculos (FTSO) e State Connector atingiram maturidade para prover dados 100% seguros.</p>
+                        <p><strong>O Futuro:</strong> Revolução dos FAssets: dar utilidade Web3 (rendimento) a criptos nativas antigas como Bitcoin e Dogecoin.</p>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="news-container">
-                        <h5 class="text-info"><i class="fa-solid fa-satellite-dish"></i> Radar Ao Vivo: FLR</h5>
+                        <h5 class="text-info"><i class="fa-solid fa-chart-line"></i> Mercado Global: FLR</h5>
                         <div class="tradingview-widget-container">
                             <div class="tradingview-widget-container__widget"></div>
                             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-                            { "feedMode": "symbol", "symbol": "CRYPTO:FLRUSD", "colorTheme": "dark", "isTransparent": true, "displayMode": "regular", "width": "100%", "height": "400", "locale": "br" }
+                            { "feedMode": "symbol", "symbol": "CRYPTO:FLRUSD", "colorTheme": "dark", "isTransparent": true, "displayMode": "regular", "width": "100%", "height": "350", "locale": "br" }
                             </script>
                         </div>
                     </div>
@@ -85,27 +219,27 @@
         </div>
     </div>
 
-    <!-- SEÇÃO ADA -->
+    <!-- SEÇÃO ADA E SHIB JUNTAS (COMO VOCÊ PEDIU) -->
+    
+    <!-- ADA -->
     <div class="coin-section bg-dark" id="ada">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 mb-4 order-lg-2">
-                    <h2 class="coin-title">
-                        <img src="https://cryptologos.cc/logos/cardano-ada-logo.png" class="coin-logo"> Cardano (ADA)
-                    </h2>
+                    <h2 class="coin-title"><img src="https://cryptologos.cc/logos/cardano-ada-logo.png" class="coin-logo"> Cardano (ADA)</h2>
                     <div class="history-text">
-                        <p><strong>O Passado:</strong> Desenvolvida sob extremo rigor acadêmico e pesquisa revisada por pares. Uma rede que andou lentamente em seus primeiros anos para garantir que nunca quebraria sua segurança e descentralização.</p>
-                        <p><strong>O Presente:</strong> Vivendo plenamente a Era Voltaire! Após atualizações cruciais (como o hard fork Chang), a Cardano abriu mão do controle de seus fundadores. Hoje, a comunidade dita os rumos da rede através de uma Constituição e governança descentralizada ativa.</p>
-                        <p><strong>O Futuro:</strong> O foco brutal em escalabilidade global. A Cardano se posiciona para ser a infraestrutura-base (identity & finanças) para nações em desenvolvimento, consolidando parcerias governamentais autossustentáveis.</p>
+                        <p><strong>O Passado:</strong> Rigor acadêmico extremo que a fez andar lentamente, mas nunca quebrar sua segurança.</p>
+                        <p><strong>O Presente:</strong> Vivendo a Era Voltaire! Após a atualização Chang, a rede é 100% governada pela comunidade.</p>
+                        <p><strong>O Futuro:</strong> Ser a infraestrutura de identidade e finanças (DeFi) autossustentável para nações em desenvolvimento.</p>
                     </div>
                 </div>
                 <div class="col-lg-6 order-lg-1">
                     <div class="news-container">
-                        <h5 class="text-info"><i class="fa-solid fa-satellite-dish"></i> Radar Ao Vivo: ADA</h5>
+                        <h5 class="text-info"><i class="fa-solid fa-chart-line"></i> Mercado Global: ADA</h5>
                         <div class="tradingview-widget-container">
                             <div class="tradingview-widget-container__widget"></div>
                             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-                            { "feedMode": "symbol", "symbol": "CRYPTO:ADAUSD", "colorTheme": "dark", "isTransparent": true, "displayMode": "regular", "width": "100%", "height": "400", "locale": "br" }
+                            { "feedMode": "symbol", "symbol": "CRYPTO:ADAUSD", "colorTheme": "dark", "isTransparent": true, "displayMode": "regular", "width": "100%", "height": "350", "locale": "br" }
                             </script>
                         </div>
                     </div>
@@ -114,27 +248,25 @@
         </div>
     </div>
 
-    <!-- SEÇÃO SHIBA INU -->
+    <!-- SHIB -->
     <div class="coin-section" id="shib">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6 mb-4">
-                    <h2 class="coin-title">
-                        <img src="https://cryptologos.cc/logos/shiba-inu-shib-logo.png" class="coin-logo"> Shiba Inu (SHIB)
-                    </h2>
+                    <h2 class="coin-title"><img src="https://cryptologos.cc/logos/shiba-inu-shib-logo.png" class="coin-logo"> Shiba Inu (SHIB)</h2>
                     <div class="history-text">
-                        <p><strong>O Passado:</strong> O auge da loucura cripto. Começou como um token de brincadeira (meme) "matador de Dogecoin" e construiu um dos maiores exércitos digitais do mundo (o ShibArmy).</p>
-                        <p><strong>O Presente:</strong> Mudança completa de narrativa. A rede Layer-2 (Shibarium) se estabilizou, processando milhões de transações com taxas quase nulas e hospedando jogos, dApps e um mecanismo complexo e automatizado de queima de SHIB.</p>
-                        <p><strong>O Futuro:</strong> A integração pesada no desenvolvimento do metaverso próprio e ferramentas focadas em Inteligência Artificial para a Web3, tentando consolidar-se definitivamente como um projeto utilitário e desassociar-se da imagem de "memecoin".</p>
+                        <p><strong>O Passado:</strong> Começou como um token de brincadeira (meme) e construiu um dos maiores exércitos digitais do mundo.</p>
+                        <p><strong>O Presente:</strong> Mudança de narrativa. A rede Shibarium Layer-2 processa transações baratas, hospedando dApps e jogos.</p>
+                        <p><strong>O Futuro:</strong> Integração pesada no Metaverso próprio e ferramentas focadas em Inteligência Artificial para a Web3.</p>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="news-container">
-                        <h5 class="text-info"><i class="fa-solid fa-satellite-dish"></i> Radar Ao Vivo: SHIB</h5>
+                        <h5 class="text-info"><i class="fa-solid fa-chart-line"></i> Mercado Global: SHIB</h5>
                         <div class="tradingview-widget-container">
                             <div class="tradingview-widget-container__widget"></div>
                             <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
-                            { "feedMode": "symbol", "symbol": "CRYPTO:SHIBUSD", "colorTheme": "dark", "isTransparent": true, "displayMode": "regular", "width": "100%", "height": "400", "locale": "br" }
+                            { "feedMode": "symbol", "symbol": "CRYPTO:SHIBUSD", "colorTheme": "dark", "isTransparent": true, "displayMode": "regular", "width": "100%", "height": "350", "locale": "br" }
                             </script>
                         </div>
                     </div>
@@ -142,3 +274,12 @@
             </div>
         </div>
     </div>
+
+    <footer class="text-center py-4 bg-black">
+        <p class="text-muted">© 2026 CriptoDocs. Desenvolvido para visão estratégica de mercado.</p>
+    </footer>
+
+    <!-- SCRIPT BOOTSTRAP (MUITO IMPORTANTE PARA AS ABAS DO TWITTER FUNCIONAREM) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
