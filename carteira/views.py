@@ -42,7 +42,7 @@ def dashboard(request):
             if simbolo_lower == 'shib': icone_url = "https://cryptologos.cc/logos/shiba-inu-shib-logo.png"
             elif simbolo_lower == 'pol': icone_url = "https://cryptologos.cc/logos/polygon-matic-logo.png"
             elif simbolo_lower == 'lunc': icone_url = "https://cryptologos.cc/logos/terra-classic-lunc-logo.png"
-            elif simbolo_lower == 'flr': icone_url = "https://s2.coinmarketcap.com/static/img/coins/64x64/4172.png"
+            elif simbolo_lower == 'flr': icone_url = "https://assets.coingecko.com/coins/images/27909/large/flare.png"
             # -----------------------------------------
 
             detalhes_moedas.append({
