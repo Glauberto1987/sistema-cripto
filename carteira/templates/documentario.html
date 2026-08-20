@@ -20,7 +20,7 @@
         .coin-logo { width: 50px; height: 50px; border-radius: 50%; }
         .history-text p { font-size: 1.1rem; line-height: 1.7; color: #cbd5e1; }
         
-        /* Design do Novo Agregador de Notícias Nativo */
+        /* Design do Agregador de Notícias Nativo */
         .news-box { background: #0b0d10; border: 1px solid #1f2937; border-radius: 12px; padding: 20px; height: 450px; overflow-y: auto; }
         .news-box::-webkit-scrollbar { width: 6px; }
         .news-box::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
@@ -153,23 +153,42 @@
         </div>
     </div>
 
+    <!-- SEÇÃO SMART MONEY (WALL STREET E ETFS) -->
+    <div class="coin-section" id="smart-money" style="background-color: #080a0c; border-top: 2px solid #00b8ff;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <h2 class="coin-title"><i class="fa-solid fa-building-columns text-info"></i> Smart Money (Wall Street)</h2>
+                    <div class="history-text">
+                        <p><strong>Seguindo os Gigantes:</strong> O mercado não é mais guiado pelo varejo. Hoje, trilhões de dólares de fundos da Nasdaq, Wall Street e gestoras colossais (como BlackRock e Fidelity) ditam as regras através de aportes em ETFs e balcão de negociação (OTC).</p>
+                        <p><strong>O Radar Institucional:</strong> Este rastreador filtra o ruído comum da internet e busca exclusivamente relatórios de fluxo de caixa institucional (inflows/outflows), compras governamentais e movimentações oficiais dos maiores bancos do mundo.</p>
+                        <p><strong>A Regra de Ouro:</strong> Para onde a liquidez institucional vai, o preço acompanha. Monitore esses aportes bilionários para antecipar e se posicionar para as próximas grandes altas do mercado.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="news-box" style="border-color: #00b8ff;" id="news-wallstreet">
+                        <div class="text-center mt-5 text-muted"><div class="spinner-border text-info mb-2" role="status"></div><br>Rastreando movimentações institucionais...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="text-center py-4 bg-black">
-        <p class="text-muted">© 2026 CriptoDocs. Painel Privado de Monitoramento de Mercado.</p>
+        <p class="text-muted">© 2026 CriptoDocs. Painel Privado de Monitoramento de Mercado Institucional.</p>
     </footer>
 
-    <!-- SCRIPT DO AGREGADOR DE NOTÍCIAS NATIVO -->
-<!-- SCRIPT DO AGREGADOR DE NOTÍCIAS NATIVO (FORÇANDO TEMPO REAL) -->
+    <!-- SCRIPT DEFINITIVO DE AGREGADOR DE DADOS -->
     <script>
         async function buscarNoticias(termoDeBusca, tituloMoeda, elementoId) {
             const container = document.getElementById(elementoId);
             
-            // 1. O HACK DO TEMPO: Adicionamos "when:7d" para forçar apenas notícias dos últimos 7 dias
+            // Força a busca para os últimos 7 dias
             const buscaRecente = termoDeBusca + " when:7d";
             
-            // 2. O HACK DO CACHE: Um número aleatório baseado na hora exata para forçar atualização em tempo real
+            // O Segredo do Cache: Um parâmetro aleatório diretamente no link do Google para forçar o servidor a ler como uma nova pesquisa
             const cacheBuster = new Date().getTime();
-            
-            const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(buscaRecente)}&hl=pt-BR&gl=BR&ceid=BR:pt-419&cb=${cacheBuster}`;
+            const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(buscaRecente)}&hl=pt-BR&gl=BR&ceid=BR:pt-419&_=${cacheBuster}`;
             const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
 
             try {
@@ -203,12 +222,13 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            // Chamadas em cascata (com termos mais precisos)
+            // Chamadas em cascata (agora incluindo o Wall Street)
             setTimeout(() => buscarNoticias("XRP", "XRP", "news-xrp"), 0);
             setTimeout(() => buscarNoticias("Stellar XLM", "Stellar (XLM)", "news-xlm"), 800);
             setTimeout(() => buscarNoticias("Flare FLR", "Flare (FLR)", "news-flr"), 1600);
             setTimeout(() => buscarNoticias("Cardano ADA", "Cardano (ADA)", "news-ada"), 2400);
             setTimeout(() => buscarNoticias("Shiba Inu SHIB", "Shiba Inu (SHIB)", "news-shib"), 3200);
+            setTimeout(() => buscarNoticias("BlackRock OR Wall Street OR ETF criptomoedas aportes", "Movimentação Institucional", "news-wallstreet"), 4000);
         });
     </script>
 </body>
